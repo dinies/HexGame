@@ -6,9 +6,9 @@ import enum
 from logging import Logger
 
 
-from player import Player
-from board import Board
-from color import Color
+from src.player import Player
+from src.board import Board
+from src.color import Color
 
 class Game:
     class GameStatus(enum.Enum):
