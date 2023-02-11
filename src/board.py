@@ -4,11 +4,25 @@ __author__      = "Gianpiero Cea"
 
 
 
-from cell import Cell
-from color import Color
+from src.cell import Cell
+from src.color import Color
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
 
+"""
+ A board is a set of exagonal cells stacked in a 2D matrix shape.
+ It can be indexed similarly to a matrix with (x, y) coordinates.
+ The (0,0) coordinate starts at the bottom left corner of the board.
+ The x coordinate indexes horizontally (going from left to right)
+ and the y vertically (going from bottom to top)
+ The exagonal cells make so that the board is slanted in a
+ romboidal shape. The slanting goes to the left.
+ ----------
+ '         '
+  '         '
+   '         '
+     ----------
+"""
 
 class Board:
 
@@ -36,7 +50,7 @@ class Board:
         """
         represents a dim_x * dim_y board of hexagonal cells
         """
-        return [[Cell(x,y) for x in range(dim_x) ] for y in range(dim_y) ]
+        return [[Cell(x,y) for y in range(dim_y) ] for x in range(dim_x) ]
     
     def place_stone(self, i:int, j:int, color : Color) -> 'Board':
         """
@@ -46,7 +60,22 @@ class Board:
         new_board = self._board
         new_board[i]
 
+    """
+    hasCell function checks if the @param cell exists in the board
+    @return True iff the cell is in the boudaries of the board
+    """
 
+    def hasCell(self, cell: Cell) -> bool:
+        return False
+
+    """
+    findNeighbours function finds all neighbouring cells
+    in the board to the cell defined by @param coords
+    @return list of neighbouring cells
+    """
+
+    def findNeighbours(self, coords: tuple) -> list[Cell]:
+        return []
 
 if __name__ == "__main__":
     board = Board()
