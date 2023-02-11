@@ -61,21 +61,22 @@ class Board:
         new_board[i]
 
     """
-    hasCell function checks if the @param cell exists in the board
+    has_cell function checks if the @param cell exists in the board
     @return True iff the cell is in the boudaries of the board
     """
 
-    def hasCell(self, cell: Cell) -> bool:
+    def has_cell(self, cell: Cell) -> bool:
         return False
 
     """
-    findNeighbours function finds all neighbouring cells
+    find_neighbours function finds all neighbouring cells
     in the board to the cell defined by @param coords
     @return list of neighbouring cells
     """
 
-    def findNeighbours(self, coords: tuple) -> list[Cell]:
+    def find_neighbours(self, coords: tuple) -> list[Cell]:
         return []
+
 
 if __name__ == "__main__":
     board = Board()
