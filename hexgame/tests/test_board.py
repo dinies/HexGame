@@ -1,6 +1,5 @@
-from context import src
-from src import board as Board
-from src import cell as Cell
+from hexgame.src import board as Board
+from hexgame.src import cell as Cell
 import unittest
 
 

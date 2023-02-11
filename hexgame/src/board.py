@@ -4,8 +4,8 @@ __author__      = "Gianpiero Cea"
 
 
 
-from src.cell import Cell
-from src.color import Color
+from hexgame.src.cell import Cell
+from hexgame.src.color import Color
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
 
