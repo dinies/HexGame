@@ -1,5 +1,5 @@
-from src.color import Color
-from src.board import Board
+from hexgame.src.color import Color
+from hexgame.src.board import Board
 
 __author__      = "Gianpiero Cea"
 
