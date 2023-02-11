@@ -34,7 +34,7 @@ class Board:
         self._connected_components : dict[Color,set[set[Cell]]] = {Color.Blue :{}, Color.Red:{}}
 
     
-    def __getitem__(self, coord : tuple):
+    def __getitem__(self, coord : tuple) -> Cell:
         x, y = coord
         return self._board[x][y]
     
@@ -54,11 +54,13 @@ class Board:
     
     def place_stone(self, i:int, j:int, color : Color) -> 'Board':
         """
-        place a stone at cell i,j on the board 
+        place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary
         """
-        new_board = self._board
-        new_board[i]
+        if self[i,j].is_empty:
+            self[i,j] = Cell(x=i,y=j,color=color)
+        else:
+            raise ValueError("Cannot place stone at cell {cell}- already occupied".format_map({"cell":self[(i,j)]}))
 
     """
     has_cell function checks if the square defined by
@@ -67,7 +69,8 @@ class Board:
     """
 
     def has_cell(self, coords: tuple[int, int]) -> bool:
-        return False
+        x,y = coords
+        return (0 <= x < self.dim_x) and (1 <= y < self.dim_y)
 
     """
     find_neighbours function finds all neighbouring cells
@@ -80,6 +83,7 @@ class Board:
 
 
 if __name__ == "__main__":
+    #TODO when happy these all work move to the test file
     board = Board()
   
     print("STARTING BOARD: ")
@@ -87,8 +91,19 @@ if __name__ == "__main__":
     cell_2_3 = Cell(2,3,Color.Red)
     board.__setitem__((2,3),cell_2_3)
     print("CHANGED BOARD: ")
-    
+
+
     print(board._board)
+
+
+    #now try placing stone
+
+    board.place_stone(3,3,Color.Blue)
+    print("CHANGED BOARD AFTER PLACING: ")
+    print(board._board)
+
+
+    assert board.has_cell(Cell(4,1,None))
 
 
 
