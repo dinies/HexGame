@@ -37,7 +37,7 @@ class TestBoardProperties:
         assert Cell(0, 2) in from_left_edge
         mediumBoard = Board(3, 3)
         from_centre = mediumBoard.find_neighbours((1, 1))
-        assert len(from_left_edge) == 6
+        assert len(from_centre) == 6
         assert Cell(0, 0) in from_centre
         assert Cell(1, 0) in from_centre
         assert Cell(0, 1) in from_centre
