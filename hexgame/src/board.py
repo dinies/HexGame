@@ -92,8 +92,9 @@ class Board :
         #TODO: finish this
         x,y = coords
         if self.is_border_cell((x,y)):
-            #return for the four corners
+            #we are on one of the 4 borders
             if x == 0:
+                #left border
                 if y == 0:
                     #bottom left
                     return set((Cell(1,0),Cell(0,1),Cell(1,1)))
@@ -103,17 +104,72 @@ class Board :
                 else:
                     #left border inside
                     return set((Cell(0,y-1),Cell(0,y+1),Cell(1,y),Cell(1,y+1)))
-
             elif x == self.dim_x - 1:
+                #right border
                 if y == 0:
                     #bottom right
                     return set((Cell(self.dim_x - 2,0),Cell(self.dim_x - 1,1)))
                 elif y == (self.dim_y -1):
                     #top right
-                    return set((Cell(self.dim_x - 2,self.dim_y-2),
-                    Cell(self.dim_x - 2,self.dim_y-1),
-                    Cell(self.dim_x - 1,self.dim_y-2)))            
+                    return set(
+                        (
+                            Cell(self.dim_x - 2,self.dim_y-2),
+                            Cell(self.dim_x - 2,self.dim_y-1),
+                            Cell(self.dim_x - 1,self.dim_y-2)
+                        )
+                    )  
+                else:
+                    #right border inside
+                    return set(
+                        (
+                            Cell(self.dim_x - 2,self.dim_y-2),
+                            Cell(self.dim_x - 2,self.dim_y-1),
+                            Cell(self.dim_x - 1,self.dim_y-2),
+                            Cell(self.dim_x - 1,self.dim_y-2),
+                        )
+                    )
+            elif y == 0:
+                #bottom border
+                if x == 0:
+                    #bottom left
+                    # note, duplicate case but keep for clarity
+                    return set((Cell(1,0),Cell(0,1),Cell(1,1)))
+                elif x == (self.dim_x -1):
+                    #bottom right
+                    # note, duplicate case but keep for clarity
+                    return set((Cell(self.dim_x-2,0),Cell(self.dim_x-1,1)))
+                else:
+                    #bottom inside
+                    return set((Cell(x-1,0),Cell(x+1,0),Cell(x,1),Cell(x+1,1)))
+            elif y == self.dim_y-1:
+                #top border
+                if x == 0:
+                    #top left
+                    # note, duplicate case but keep for clarity
+                    return set((Cell(0,self.dim_y-2),Cell(1,self.dim_y-1)))
+                elif x == (self.dim_x -1):
+                    #top right
+                    # note, duplicate case but keep for clarity
+                    return set(
+                        (
+                            Cell(self.dim_x - 2,self.dim_y-2),
+                            Cell(self.dim_x - 2,self.dim_y-1),
+                            Cell(self.dim_x - 1,self.dim_y-2)
+                        )
+                    )  
+                else:
+                    #top inside
+                    return set(
+                        (
+                            Cell(x-1,self.dim_y-1),
+                            Cell(x+1,self.dim_y-1),
+                            Cell(x-1,self.dim_y-2),
+                            Cell(x,self.dim_y-2)
+                        )
+                    )
+
         else:
+            #we are not a border, fully inside
             return set((
                 Cell(x+1,y),
                 Cell(x-1,y),
