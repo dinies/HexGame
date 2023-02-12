@@ -1,13 +1,10 @@
 """board.py: A board to play a game of hex on"""
-
-__author__      = "Gianpiero Cea"
-
-
-
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
+
+__author__      = "Gianpiero Cea"
 
 """
  A board is a set of exagonal cells stacked in a 2D matrix shape.
@@ -24,11 +21,12 @@ BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
      ----------
 """
 
-class Board:
 
-    def __init__(self, dim_x : int = BOARD_DEFAULT_X_DIM , dim_y : int= BOARD_DEFAULT_Y_DIM ):
-        self.dim_x :int = dim_x
-        self.dim_y :int = dim_y
+class Board :
+
+    def __init__( self , dim_x : int = BOARD_DEFAULT_X_DIM , dim_y : int= BOARD_DEFAULT_Y_DIM ):
+        self.dim_x : int = dim_x
+        self.dim_y : int = dim_y
 
         self._board :list[list[Cell]] = self._make_board(dim_x,dim_y) 
         self._connected_components : dict[Color,set[set[Cell]]] = {Color.Blue :{}, Color.Red:{}}
@@ -72,14 +70,46 @@ class Board:
         x,y = coords
         return (0 <= x < self.dim_x) and (1 <= y < self.dim_y)
 
+
+
+    """
+    is_border_cell checks if the @param cell is found on one of the 4 borders
+    of the board
+    """
+    def is_border_cell(self ,cell: Cell) -> bool:
+        return cell.x == 0 or cell.x == (self.dim_x -1) or cell.y == 0 or cell.y == (self.dim_y -1)
+
+
     """
     find_neighbours function finds all neighbouring cells
     in the board to the cell defined by @param coords
     @return list of neighbouring cells
     """
 
-    def find_neighbours(self, coords: tuple[int, int]) -> set[Cell]:
-        return []
+
+    def find_neighbours(self, coords: tuple[int,int]) -> set[Cell]:
+        #TODO: finish this
+        x,y = coords
+        if self.is_border_cell(Cell(x,y,None)):
+            if x == 0:
+                if y == 0:
+                    pass
+                
+            
+        else:
+            return set(
+                Cell(i+1,j),
+                Cell(i-1,j),
+                Cell(i,j+1),
+                Cell(i+1,j+1),
+                Cell(i-1,j-1),
+                Cell(i,j-1)
+                )
+
+
+    def __repr__(self) -> str:
+        pass
+
 
 
 if __name__ == "__main__":
@@ -104,6 +134,8 @@ if __name__ == "__main__":
 
 
     assert board.has_cell(Cell(4,1,None))
+    assert not board.is_border_cell(Cell(4,1,None))
+    assert board.is_border_cell(Cell(10,1,None))
 
 
 
