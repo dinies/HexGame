@@ -68,7 +68,7 @@ class Board :
 
     def has_cell(self, coords: tuple[int, int]) -> bool:
         x,y = coords
-        return (0 <= x < self.dim_x) and (1 <= y < self.dim_y)
+        return (0 <= x < self.dim_x) and (0 <= y < self.dim_y)
 
 
 
@@ -76,8 +76,9 @@ class Board :
     is_border_cell checks if the @param cell is found on one of the 4 borders
     of the board
     """
-    def is_border_cell(self ,cell: Cell) -> bool:
-        return cell.x == 0 or cell.x == (self.dim_x -1) or cell.y == 0 or cell.y == (self.dim_y -1)
+    def is_border_cell(self ,coords: tuple[int, int]) -> bool:
+        x,y = coords
+        return x == 0 or x == (self.dim_x -1) or y == 0 or y == (self.dim_y -1)
 
 
     """
@@ -90,20 +91,36 @@ class Board :
     def find_neighbours(self, coords: tuple[int,int]) -> set[Cell]:
         #TODO: finish this
         x,y = coords
-        if self.is_border_cell(Cell(x,y,None)):
+        if self.is_border_cell((x,y)):
+            #return for the four corners
             if x == 0:
                 if y == 0:
-                    pass
-                
-            
+                    #bottom left
+                    return set((Cell(1,0),Cell(0,1),Cell(1,1)))
+                elif y == (self.dim_y -1):
+                    #top left
+                    return set((Cell(0,self.dim_y-2),Cell(1,self.dim_y-1)))
+                else:
+                    #left border inside
+                    return set((Cell(0,y-1),Cell(0,y+1),Cell(1,y),Cell(1,y+1)))
+
+            elif x == self.dim_x - 1:
+                if y == 0:
+                    #bottom right
+                    return set((Cell(self.dim_x - 2,0),Cell(self.dim_x - 1,1)))
+                elif y == (self.dim_y -1):
+                    #top right
+                    return set((Cell(self.dim_x - 2,self.dim_y-2),
+                    Cell(self.dim_x - 2,self.dim_y-1),
+                    Cell(self.dim_x - 1,self.dim_y-2)))            
         else:
-            return set(
-                Cell(i+1,j),
-                Cell(i-1,j),
-                Cell(i,j+1),
-                Cell(i+1,j+1),
-                Cell(i-1,j-1),
-                Cell(i,j-1)
+            return set((
+                Cell(x+1,y),
+                Cell(x-1,y),
+                Cell(x,y+1),
+                Cell(x+1,y+1),
+                Cell(x-1,y-1),
+                Cell(x,y-1))
                 )
 
 
