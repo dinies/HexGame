@@ -6,9 +6,9 @@ import enum
 from logging import Logger
 
 
-from player import Player
-from board import Board
-from color import Color
+from hexgame.src.player import Player
+from hexgame.src.board import Board
+from hexgame.src.color import Color
 
 class Game:
     class GameStatus(enum.Enum):

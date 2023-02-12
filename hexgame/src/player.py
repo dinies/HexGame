@@ -1,5 +1,5 @@
-from color import Color
-from board import Board
+from src.color import Color
+from src.board import Board
 
 __author__      = "Gianpiero Cea"
 
