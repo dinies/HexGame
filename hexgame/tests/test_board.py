@@ -9,16 +9,13 @@ class TestBoardProperties:
         empty_board = Board.Board(0, 0)
         assert len(empty_board._board) == 0
 
-    def test_create_small_board(self):
+    @pytest.mark.parametrize("test_input",
+                             [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)])
+    def test_create_small_board(self, test_input):
         small_board = Board.Board(2, 3)
         assert len(small_board._board) == 2
         assert len(small_board._board[0]) == 3
-        assert small_board.has_cell((0, 0))
-        assert small_board.has_cell((1, 0))
-        assert small_board.has_cell((0, 1))
-        assert small_board.has_cell((1, 1))
-        assert small_board.has_cell((0, 2))
-        assert small_board.has_cell((1, 2))
+        assert small_board.has_cell(test_input)
 
     def test_neighbours_of_cell(self):
         small_board = Board.Board(2, 3)
