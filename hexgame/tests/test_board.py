@@ -1,45 +1,49 @@
-from hexgame.src import board as Board
-from hexgame.src import cell as Cell
+from hexgame.src.board import Board
+from hexgame.src.cell import Cell
 import pytest
 
 
 class TestBoardProperties:
 
     def test_create_empty_board(self):
-        empty_board = Board.Board(0, 0)
+        empty_board = Board(0, 0)
         assert len(empty_board._board) == 0
 
     @pytest.mark.parametrize("test_input",
                              [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)])
-    def test_create_small_board(self, test_input):
-        small_board = Board.Board(2, 3)
+    def test_create_small_board(self, test_input: tuple[int, int]):
+        small_board = Board(2, 3)
         assert len(small_board._board) == 2
         assert len(small_board._board[0]) == 3
         assert small_board.has_cell(test_input)
 
-    def test_neighbours_of_cell(self):
-        small_board = Board.Board(2, 3)
-        from_bottom_left_corner = small_board.find_neighbours((0, 0))
-        assert len(from_bottom_left_corner) == 3
-        assert Cell(0, 1) in from_bottom_left_corner
-        assert Cell(1, 0) in from_bottom_left_corner
-        assert Cell(1, 1) in from_bottom_left_corner
-        from_bottom_right_corner = small_board.find_neighbours((1, 0))
-        assert len(from_bottom_right_corner) == 2
-        assert Cell(0, 0) in from_bottom_right_corner
-        assert Cell(1, 1) in from_bottom_right_corner
-        from_left_edge = small_board.find_neighbours((0, 1))
-        assert len(from_left_edge) == 4
-        assert Cell(0, 0) in from_left_edge
-        assert Cell(1, 1) in from_left_edge
-        assert Cell(1, 2) in from_left_edge
-        assert Cell(0, 2) in from_left_edge
-        mediumBoard = Board.Board(3, 3)
-        from_centre = mediumBoard.find_neighbours((1, 1))
-        assert len(from_left_edge) == 6
-        assert Cell(0, 0) in from_centre
-        assert Cell(1, 0) in from_centre
-        assert Cell(0, 1) in from_centre
-        assert Cell(2, 1) in from_centre
-        assert Cell(1, 2) in from_centre
-        assert Cell(2, 2) in from_centre
+    @pytest.mark.parametrize(
+        "board_size,tile, expected",
+        [
+            pytest.param("small", (0, 0), {Cell(0, 1),
+                                           Cell(1, 0),
+                                           Cell(1, 1)}),
+            pytest.param("small", (1, 0), {Cell(0, 0),
+                                           Cell(1, 1)}),
+            pytest.param("small", (0, 1), {Cell(0, 0),
+                                           Cell(1, 1),
+                                           Cell(1, 2),
+                                           Cell(0, 2)}),
+            pytest.param("medium", (1, 1), {Cell(0, 0),
+                                            Cell(1, 0),
+                                            Cell(0, 1),
+                                            Cell(1, 2),
+                                            Cell(2, 1),
+                                            Cell(2, 2)}),
+
+        ]
+
+    )
+    def test_neighbours_of_cell(self, board_size: str, tile: tuple[int, int], expected: set[tuple[int, int]]):
+        if board_size == "small":
+            board = Board(2, 3)
+        elif board_size == "medium":
+            board = Board(3, 3)
+
+        nbrs = board.find_neighbours(tile)
+        assert nbrs == expected
