@@ -12,7 +12,7 @@ __author__ = "Gianpiero Cea"
  The (0,0) coordinate starts at the bottom left corner of the board.
  The x coordinate indexes horizontally (going from left to right)
  and the y vertically (going from bottom to top)
- The exagonal cells make so that the board is slanted in a
+ The hexagonal cells make so that the board is slanted in a
  romboidal shape. The slanting goes to the left.
  ----------
  '         '
@@ -24,7 +24,7 @@ __author__ = "Gianpiero Cea"
 
 class Board:
 
-    def __init__(self, dim_x: int = BOARD_DEFAULT_X_DIM, dim_y: int = BOARD_DEFAULT_Y_DIM):
+    def __init__(self, dim_x: int = BOARD_DEFAULT_X_DIM, dim_y: int = BOARD_DEFAULT_Y_DIM) -> 'Board':
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
 
@@ -42,6 +42,48 @@ class Board:
         assert val.x == x
         assert val.y == y
         self._board[x][y] = val
+
+    def __repr__(self) -> str:
+        # TODO: change the Cell repr to be simpler
+        # then change this one to make it even simpler
+        return (str(self._board))
+
+    def __str__(self) -> str:
+        """
+        We visualize the board as a left-slanted romboidal.
+        If cell i,j is empty we visualise it with a dash,
+        if is occupied by Red player we visualise it with letter R
+        and if cocupeid by Blue Player we visualitse it with a letter b
+
+        for example, for a 5X5 board:
+
+        - - - - -
+         - b - - - 
+          - - - R -
+           - - - b -
+            - - R - -
+
+        """
+        board_str = ""
+
+        for y in reversed(range(self.dim_y)):
+            new_line = " "*(self.dim_y-y-1)
+            for x in range(self.dim_x):
+                cell = self[x, y]
+                match cell:
+                    case Cell(x, y, Color.Empty):
+                        cell_str = '-'
+                    case Cell(x, y, Color.Red):
+                        cell_str = 'R'
+                    case Cell(x, y, Color.Blue):
+                        cell_str = 'b'
+
+                new_line += cell_str + " "
+            new_line += "\n"
+            board_str += new_line
+            # add spaces to make it slante
+
+        return board_str
 
     def _make_board(self, dim_x: int, dim_y: int) -> list[list[Cell]]:
         """
@@ -105,9 +147,6 @@ class Board:
             (cell.x, cell.y))}
         return nbrd
 
-    def __repr__(self) -> str:
-        pass
-
 
 if __name__ == "__main__":
     # TODO when happy these all work move to the test file
@@ -127,6 +166,12 @@ if __name__ == "__main__":
     print("CHANGED BOARD AFTER PLACING: ")
     print(board._board)
 
-    assert board.has_cell(Cell(4, 1, None))
-    assert not board.is_border_cell(Cell(4, 1, None))
-    assert board.is_border_cell(Cell(10, 1, None))
+    assert board.has_cell((4, 1))
+
+    assert not board.is_border_cell((4, 1))
+
+    assert board.is_border_cell((10, 1))
+
+    print(repr(board))
+
+    print(str(board))
