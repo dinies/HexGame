@@ -102,6 +102,7 @@ class Board:
         else:
             raise ValueError(
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
+        return self
 
     def has_cell(self, coords: tuple[int, int]) -> bool:
         """
