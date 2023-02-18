@@ -24,6 +24,21 @@ class TestBoardProperties:
         assert len(small_board._board[0]) == 3
         assert small_board.has_cell(test_input)
 
+    # __str__
+    @pytest.mark.parametrize("board_sizes,expected",
+                             [pytest.param(
+                                 (0, 0), ''
+                             ),
+                                 pytest.param(
+                                 (3, 4), '- - - \n - - - \n  - - - \n   - - - \n'
+                             )]
+                             )
+    def test__str__empty_board(self, board_sizes: tuple[int, int], expected: str):
+        board = Board(board_sizes[0], board_sizes[1])
+        print(str(board))
+        print(expected)
+        assert str(board) == expected
+
     # find_neighbours
 
     @pytest.mark.parametrize(
