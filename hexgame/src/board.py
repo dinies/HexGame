@@ -1,6 +1,7 @@
 """board.py: A board to play a game of hex on"""
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
+from collections.abc import Iterator
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
 
@@ -144,6 +145,15 @@ class Board:
             (cell.x, cell.y))}
         return nbrd
 
+    @property
+    def empty_positions(self) -> Iterator[tuple[int, int]]:
+        """
+        Returns all the positions (i,j) for which the
+        (i,j) cell is empty
+        """
+        # TODO:reimplement this with self.__iter__
+        return ((x, y) for y, row in enumerate(self._board) for x, _ in enumerate(row) if self[x, y].is_empty)
+
 
 if __name__ == "__main__":
     # TODO when happy these all work move to the test file
@@ -156,12 +166,15 @@ if __name__ == "__main__":
     print("CHANGED BOARD: ")
 
     print(board._board)
+    print(len(list(board.empty_positions)))
 
     # now try placing stone
 
     board.place_stone(3, 3, Color.Blue)
     print("CHANGED BOARD AFTER PLACING: ")
     print(board._board)
+
+    print(len(list(board.empty_positions)))
 
     assert board.has_cell((4, 1))
 
