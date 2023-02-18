@@ -1,5 +1,6 @@
 from hexgame.src.board import Board
 from hexgame.src.cell import Cell
+from hexgame.src.color import Color
 import pytest
 
 
@@ -9,6 +10,12 @@ class TestBoardProperties:
         empty_board = Board(0, 0)
         assert len(empty_board._board) == 0
 
+    def test_empty_cells_on_blank_board(self):
+        small_board = Board(3, 3)
+        for i in range(3):
+            for j in range(3):
+                assert small_board[i, j].is_empty
+
     @pytest.mark.parametrize("test_input",
                              [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2)])
     def test_create_small_board(self, test_input: tuple[int, int]):
@@ -16,6 +23,8 @@ class TestBoardProperties:
         assert len(small_board._board) == 2
         assert len(small_board._board[0]) == 3
         assert small_board.has_cell(test_input)
+
+    # find_neighbours
 
     @pytest.mark.parametrize(
         "board_size,tile, expected",
@@ -47,3 +56,18 @@ class TestBoardProperties:
 
         nbrs = board.find_neighbours(tile)
         assert nbrs == expected
+
+    # place_stone
+
+    def test_place_stone_on_empty_board(self):
+        board = Board(3, 3)
+        board.place_stone(1, 2, color=Color.Red)
+
+        assert board[1, 2] == Cell(1, 2, Color.Red)
+
+    def test_place_stone_already_filled(self):
+        with pytest.raises(ValueError):
+            board = Board(3, 3)
+            board.place_stone(1, 2, color=Color.Red)
+
+            board.place_stone(1, 2, color=Color.Blue)
