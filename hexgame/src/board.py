@@ -102,33 +102,30 @@ class Board:
             raise ValueError(
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
 
-    """
-    has_cell function checks if the square defined by
-    @param coords exists in the board.
-    @return True iff the cell is in the boudaries of the board
-    """
-
     def has_cell(self, coords: tuple[int, int]) -> bool:
+        """
+        has_cell function checks if the square defined by
+        @param coords exists in the board.
+        @return True iff the cell is in the boudaries of the board
+        """
         x, y = coords
         return (0 <= x < self.dim_x) and (0 <= y < self.dim_y)
 
-    """
-    is_border_cell checks if the @param cell is found on one of the 4 borders
-    of the board
-    """
-
     def is_border_cell(self, coords: tuple[int, int]) -> bool:
+        """
+        is_border_cell checks if the @param cell is found on one of the 4 borders
+        of the board
+        """
         x, y = coords
         return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
 
-    """
-    find_neighbours function finds all neighbouring cells
-    in the board to the cell defined by @param coords
-    @return list of neighbouring cells
-    """
-
     def find_neighbours(self, coords: tuple[int, int]) -> set[Cell]:
-        # TODO: finish this
+        """
+        find_neighbours function finds all neighbouring cells
+        in the board to the cell defined by @param coords
+        @return list of neighbouring cells
+        """
+
         x, y = coords
         nbrs = set()
 
