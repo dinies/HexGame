@@ -34,7 +34,7 @@ def main():
 
     username = getUsername()
     if gpus:
-        base_image = "nvidia/cudagl:11.4.2-devel"
+        base_image = "nvidia/cuda:12.0.1-devel-ubuntu20.04"
     else:
         base_image = "ubuntu:focal"
     home = Path.home()
