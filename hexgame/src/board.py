@@ -1,7 +1,9 @@
 """board.py: A board to play a game of hex on"""
+from collections.abc import Iterator
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
-from collections.abc import Iterator
+from hexgame.src.conncomp import ConnCompSet
+
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
 
@@ -29,11 +31,11 @@ class Board:
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
         self._board: list[list[Cell]] = self._make_board(dim_x, dim_y)
-        # connected components is a dict that contain the set of connected
-        # components (as set of Cells) for the graph obtained by connecting
+        # _connected_components_per_color is a dict that contain the set of connected
+        # components (as set of tuples of ints) for the graph obtained by connecting
         # cells of  given color if neighbours
-        self._connected_components: dict[Color, set[set[Cell]]] = {
-            Color.Blue: {}, Color.Red: {}}
+        self._connected_components_per_color: dict[Color, ConnCompSet[tuple[int, int]]] = {
+            Color.Blue: ConnCompSet[tuple[int, int]](), Color.Red: ConnCompSet[tuple[int, int]]()}
 
     def __getitem__(self, coord: tuple) -> Cell:
         x, y = coord
@@ -94,71 +96,12 @@ class Board:
         """
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
+    def _update_connected_components(self, i, j, color) -> None:
+        connected_components_set = self._connected_components_per_color[color]
+        all_nbrs = self.find_neighbours((i, j))
+        nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
+        connected_components_set.update_conn_comp(node=(i, j), nbrs=nbrs)
 
- 
-
-    def _update_connected_components(self, new_placed_cell: Cell) -> set[set[Cell]]:
-        """
-        Given a new placed cell it recomputes the relevant connected components
-        data structure (either the Red or Blue one)
-
-        The idea behind the algorithm is simple, and can be generalised
-        for any graph that is updated with a new node and edges
-        from that node to the previous nodes
-
-        For example, let's say we have 5 red cells on board, let's call them:
-
-        A,B,C,D,E
-
-        Let's say that , because of their edges, they can be separated in
-        connected components as:
-
-        { {A,C,E} , {B} , {D} }
-
-        Now, when we add a new node F, and F has the following connections:
-        F - B ; F - E
-
-        Then the updated components set will be updated by unioning all the
-        single connected compontes that F is connected to plus F itself,
-        thus we will end up with :
-
-        { {A,C,E,F,B} , {D} }
-        """
-        # TODO: maybe create a class for connected component as this
-        # seems a complex enough idea
-
-        color = new_placed_cell.color
-        connected_components_for_color = self._connected_components[color]
-        same_color_nbrs = {cell for cell in self.find_neighbours(cell
-            (new_placed_cell.x, new_placed_cell.y)) if cell.color == color}
-
-        # 1.a find the neihgbours of the new placed cell
-        #   of the same color
-
-        # 1.b For each of those neighours, find the connected component in
-        # which they lie, if it exists
-
-        same_color_nbrs = {self._get_connected_comp(cell) 
-        
-        
-
-    def _get_connected_comp(self,cell:Cell) -> set[Cell]:
-        """
-        Returns as a set of Cells the current connected
-        component in which the cell lies
-
-        """
-        color = cell.color
-        connected_components = self._connected_components[color]
-        conn_comps_for_cell =[comp for comp in connected_components if cell in comp]
-
-        # There should be exactly a single conn component
-        if len(conn_comps_for_cell) != 1 :
-            raise ValueError("Attempted to find a connected component for not found cell")
-
-        return conn_comps_for_cell[0]
-
-    
     def place_stone(self, i: int, j: int, color: Color) -> 'Board':
         """
         place a stone at cell i,j on the board if this is empty
@@ -167,8 +110,8 @@ class Board:
         if self[i, j].is_empty:
             self[i, j] = Cell(x=i, y=j, color=color)
             # now let's update the connected components
-            self._update_connected_components(Cell(i, j, color))
-
+            # TODO: implement updated conn component
+            self._update_connected_components(i, j, color)
         else:
             raise ValueError(
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
@@ -199,7 +142,6 @@ class Board:
         """
 
         x, y = coords
-        nbrs = set()
 
         # this is a theoretical neighborood in the
         # sense that some of this cell might be out of the board
