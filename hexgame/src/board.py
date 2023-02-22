@@ -31,11 +31,11 @@ class Board:
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
         self._board: list[list[Cell]] = self._make_board(dim_x, dim_y)
-        # _connected_components_per_color is a dict that contain the set of connected
-        # components (as set of tuples of ints) for the graph obtained by connecting
-        # cells of  given color if neighbours
-        self._connected_components_per_color: dict[Color, ConnCompSet[tuple[int, int]]] = {
-            Color.Blue: ConnCompSet[tuple[int, int]](), Color.Red: ConnCompSet[tuple[int, int]]()}
+
+        self._connected_components_red: ConnCompSet[tuple[int,
+                                                          int]] = ConnCompSet[tuple[int, int]]()
+        self._connected_components_blue: ConnCompSet[tuple[int,
+                                                           int]] = ConnCompSet[tuple[int, int]]()
 
     def __getitem__(self, coord: tuple) -> Cell:
         x, y = coord
@@ -97,7 +97,8 @@ class Board:
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
     def _update_connected_components(self, i, j, color) -> None:
-        connected_components_set = self._connected_components_per_color[color]
+        connected_components_set = self._connected_components_blue if color == Color.Blue else self._connected_components_red
+        print(str(color)+'Connected component: '+str(connected_components_set))
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
         connected_components_set.update_conn_comp(node=(i, j), nbrs=nbrs)

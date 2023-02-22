@@ -85,9 +85,11 @@ class ConnCompSet(Generic[T]):
             # the existing conn component to the newly created one
             # and set the new members of this conn component to be the
             # current members union the nbr itself
+            olc_nbr_comp = self[nbr]
             self[nbr] = new_conn_comp
-            self[nbr].members = self[nbr].members.union({
-                nbr})
+            self[nbr].members = olc_nbr_comp.members.union(
+                new_conn_comp.members)
+        self.reorder_ids()
 
     @property
     def conn_comp_set(self) -> set[ConnComp[T]]:
@@ -102,6 +104,14 @@ class ConnCompSet(Generic[T]):
     def no_comps(self) -> int:
         return len(self.conn_comp_set)
 
+    def reorder_ids(self) -> None:
+        no_comps = self.no_comps
+        conn_comp_set = self.conn_comp_set
+        conn_comp_set_ids = {comp.id for comp in conn_comp_set}
+        mapping = dict(zip(conn_comp_set_ids, range(no_comps)))
+        self._conn_comp_dict = {k: ConnComp(
+            mapping[v.id], v.members) for k, v in self._conn_comp_dict.items()}
+
 
 if __name__ == "__main__":
     conncompset = ConnCompSet()
@@ -111,7 +121,7 @@ if __name__ == "__main__":
     print(conncompset._conn_comp_dict)
     print(conncompset.no_comps)
 
-    conncompset.update_conn_comp((0, 0), nbrs=set([(0, 1), (1, 0)]))
+    conncompset.update_conn_comp((1, 0), nbrs=set([(0, 0)]))
     print(conncompset._conn_comp_dict)
     print(conncompset._conn_comp_dict[(0, 0)].members)
     print(conncompset.no_comps)
