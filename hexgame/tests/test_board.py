@@ -39,7 +39,8 @@ class TestBoardProperties:
         ]
 
     )
-    def test_neighbours_of_cell(self, board_size: str, tile: tuple[int, int], expected: set[tuple[int, int]]):
+    def test_neighbours_of_cell(self, board_size: str, tile: tuple[int, int],
+                                expected: set[tuple[int, int]]):
         if board_size == "small":
             board = Board(2, 3)
         elif board_size == "medium":
