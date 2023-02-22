@@ -16,7 +16,7 @@ class Game:
     def __init__(self):
         self.player_1: Player = Player()
         self.player_2: Player = Player(Color.Blue)
-        self.board: Board = Board()
+        self.board: Board = Board(1, 2)
         self.status: self.GameStatus = self.GameStatus.Running
         self.move: int = 0
         self.current_player: Player = self.player_1

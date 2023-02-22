@@ -16,6 +16,12 @@ class ConnComp(Generic[T]):
         self.id = id
         self.members = members
 
+    def __eq__(self, other) -> bool:
+        return self.id == other.id and self.members == other.members
+
+    def __hash__(self):
+        return self.id.__hash__()
+
     def __repr__(self) -> str:
         return str(self.id)
 
