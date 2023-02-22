@@ -24,7 +24,9 @@ __author__ = "Gianpiero Cea"
 
 class Board:
 
-    def __init__(self, dim_x: int = BOARD_DEFAULT_X_DIM, dim_y: int = BOARD_DEFAULT_Y_DIM):
+    def __init__(self,
+                 dim_x: int = BOARD_DEFAULT_X_DIM,
+                 dim_y: int = BOARD_DEFAULT_Y_DIM):
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
 
@@ -58,7 +60,8 @@ class Board:
             self[i, j] = Cell(x=i, y=j, color=color)
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
+                "Cannot place stone at cell {cell}- already"
+                "occupied".format_map({"cell": self[(i, j)]}))
 
     """
     has_cell function checks if the square defined by
@@ -77,7 +80,8 @@ class Board:
 
     def is_border_cell(self, coords: tuple[int, int]) -> bool:
         x, y = coords
-        return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
+        return (x == 0 or x == (self.dim_x - 1) or
+                y == 0 or y == (self.dim_y - 1))
 
     """
     find_neighbours function finds all neighbouring cells
@@ -88,7 +92,6 @@ class Board:
     def find_neighbours(self, coords: tuple[int, int]) -> set[Cell]:
         # TODO: finish this
         x, y = coords
-        nbrs = set()
 
         # this is a theoretical neighborood in the
         # sense that some of this cell might be out of the board
