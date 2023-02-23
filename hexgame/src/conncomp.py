@@ -95,6 +95,10 @@ class ConnCompSet(Generic[T]):
             self[nbr] = new_conn_comp
             self[nbr].members = olc_nbr_comp.members.union(
                 new_conn_comp.members)
+            # TODO:use a Union-Find datasctructur
+            # very sub-optimal but want to get something working
+            for mem in self[nbr].members:
+                self[mem] = new_conn_comp
         self.reorder_ids()
 
     @property
