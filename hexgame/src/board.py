@@ -113,8 +113,7 @@ class Board:
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
     def _update_connected_components(self, i, j, color) -> None:
-        breakpoint()
-        connected_components_set = self.connected_components_blue if color == Color.Blue else self.connected_components_red
+        connected_components_set = self._connected_components_blue if color == Color.Blue else self._connected_components_red
         print(str(color)+'Connected component: '+str(connected_components_set))
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
