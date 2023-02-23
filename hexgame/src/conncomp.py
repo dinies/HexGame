@@ -84,7 +84,7 @@ class ConnCompSet(Generic[T]):
         # containing the new node and with id to the current number of
         # components plus one, and add this to the conn comp dict
 
-        new_conn_comp = ConnComp(id=self.no_comps + 1, members={node})
+        new_conn_comp = ConnComp(id=len(self) + 1, members={node})
         self[node] = new_conn_comp
         for nbr in nbrs:
             # 2. Then replace for each neighbour of the node
@@ -110,12 +110,11 @@ class ConnCompSet(Generic[T]):
         """
         return set(self._conn_comp_dict.values())
 
-    @property
-    def no_comps(self) -> int:
+    def __len__(self):
         return len(self.conn_comp_set)
 
     def reorder_ids(self) -> None:
-        no_comps = self.no_comps
+        no_comps = len(self)
         conn_comp_set = self.conn_comp_set
         conn_comp_set_ids = {comp.id for comp in conn_comp_set}
         mapping = dict(zip(conn_comp_set_ids, range(no_comps)))
@@ -129,15 +128,15 @@ if __name__ == "__main__":
     conncompset.update_conn_comp(node=(0, 0), nbrs=set())
     print(conncompset._conn_comp_dict[(0, 0)].members)
     print(conncompset._conn_comp_dict)
-    print(conncompset.no_comps)
+    print(len(conncompset))
 
     conncompset.update_conn_comp((1, 0), nbrs=set([(0, 0)]))
     print(conncompset._conn_comp_dict)
     print(conncompset._conn_comp_dict[(0, 0)].members)
-    print(conncompset.no_comps)
+    print(len(no_comps))
 
     conncompset.update_conn_comp((1, 1), set(''))
     print(conncompset._conn_comp_dict)
     print(conncompset.conn_comp_set)
     print(conncompset._conn_comp_dict[(1, 1)].members)
-    print(conncompset.no_comps)
+    print(len(no_comps))

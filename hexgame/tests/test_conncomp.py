@@ -14,9 +14,9 @@ class TestConnComp:
         node_target = (0, 1)
         neighbours = {}
 
-        assert cc_set.no_comps == 0
+        assert len(cc_set) == 0
         cc_set.update_conn_comp(node_target, neighbours)
-        assert cc_set.no_comps == 1
+        assert len(cc_set) == 1
         assert len(cc_set._conn_comp_dict) == 1
         assert node_target in cc_set._conn_comp_dict.keys()
         assert cc_set._conn_comp_dict[node_target].id == 0
@@ -31,7 +31,7 @@ class TestConnComp:
         neighbours = {}
         cc_set.update_conn_comp(node_target, neighbours)
         assert len(cc_set._conn_comp_dict) == 2
-        assert cc_set.no_comps == 2
+        assert len(cc_set) == 2
         assert node_target in cc_set._conn_comp_dict.keys()
         assert n in cc_set._conn_comp_dict.keys()
         assert len(cc_set._conn_comp_dict[n].members) == 1
@@ -47,7 +47,7 @@ class TestConnComp:
         cc_set.update_conn_comp(node_target, neighbours)
         assert len(cc_set._conn_comp_dict) == 2
 
-        assert cc_set.no_comps == 1
+        assert len(cc_set) == 1
         assert node_target in cc_set._conn_comp_dict.keys()
         assert n in cc_set._conn_comp_dict.keys()
         assert len(cc_set._conn_comp_dict[n].members) == 2
@@ -72,7 +72,7 @@ class TestConnComp:
         node_target = (0, 1)
         neighbours = {n_1, n_5}
 
-        assert cc_set.no_comps == 2
+        assert len(cc_set) == 2
         cc_set.update_conn_comp(node_target, neighbours)
         for x in cc_set._conn_comp_dict[n_1].members:
             print(x)
@@ -92,4 +92,4 @@ class TestConnComp:
         for x in cc_set._conn_comp_dict[node_target].members:
             print(x)
 
-        assert cc_set.no_comps == 1
+        assert len(cc_set) == 1
