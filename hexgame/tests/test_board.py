@@ -86,3 +86,13 @@ class TestBoardProperties:
             board.place_stone(1, 2, color=Color.Red)
 
             board.place_stone(1, 2, color=Color.Blue)
+
+    def test_update_connected_comps(self):
+        color = Color.Red
+        node = (1, 1)
+        board = Board(3, 3)
+        assert len(board.connected_components_blue) == 1
+        print(board.connected_components_blue)
+        board._update_connected_components(node[0], node[1], color)
+        assert len(board.connected_components_blue) == 1
+        assert len(board.connected_components_red) == 2
