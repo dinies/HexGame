@@ -90,6 +90,22 @@ class Board:
 
         return board_str
 
+    @property
+    def connected_components_red(self):
+        return self._connected_components_red
+
+    @connected_components_red.setter
+    def connected_components_red(self, val: ConnCompSet[tuple[int, int]]):
+        self.connected_components_red = val
+
+    @property
+    def connected_components_blue(self):
+        return self._connected_components_blue
+
+    @connected_components_blue.setter
+    def connected_components_blue(self, val: ConnCompSet[tuple[int, int]]):
+        self.connected_components_blue = val
+
     def _make_board(self, dim_x: int, dim_y: int) -> list[list[Cell]]:
         """
         represents a dim_x * dim_y board of hexagonal cells
@@ -97,7 +113,8 @@ class Board:
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
     def _update_connected_components(self, i, j, color) -> None:
-        connected_components_set = self._connected_components_blue if color == Color.Blue else self._connected_components_red
+        breakpoint()
+        connected_components_set = self.connected_components_blue if color == Color.Blue else self.connected_components_red
         print(str(color)+'Connected component: '+str(connected_components_set))
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
