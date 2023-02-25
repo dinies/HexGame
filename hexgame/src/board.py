@@ -2,7 +2,7 @@
 from collections.abc import Iterator
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
-from hexgame.src.conncomp import ConnCompSet
+from hexgame.src.graph import Graph
 
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
@@ -32,10 +32,8 @@ class Board:
         self.dim_y: int = dim_y
         self._board: list[list[Cell]] = self._make_board(dim_x, dim_y)
 
-        self._connected_components_red: ConnCompSet[tuple[int,
-                                                          int]] = ConnCompSet[tuple[int, int]]()
-        self._connected_components_blue: ConnCompSet[tuple[int,
-                                                           int]] = ConnCompSet[tuple[int, int]]()
+        self._red_graph: Graph[tuple[int, int]] = Graph[tuple[int, int]]()
+        self._blue_graph: Graph[tuple[int, int]] = Graph[tuple[int, int]]()
 
     def __getitem__(self, coord: tuple) -> Cell:
         x, y = coord
@@ -91,20 +89,12 @@ class Board:
         return board_str
 
     @property
-    def connected_components_red(self):
-        return self._connected_components_red
-
-    @connected_components_red.setter
-    def connected_components_red(self, val: ConnCompSet[tuple[int, int]]):
-        self.connected_components_red = val
+    def red_graph(self) -> Graph[tuple[int, int]]:
+        return self._red_graph
 
     @property
-    def connected_components_blue(self):
-        return self._connected_components_blue
-
-    @connected_components_blue.setter
-    def connected_components_blue(self, val: ConnCompSet[tuple[int, int]]):
-        self.connected_components_blue = val
+    def blue_graph(self) -> Graph[tuple[int, int]]:
+        return self._blue_graph
 
     def _make_board(self, dim_x: int, dim_y: int) -> list[list[Cell]]:
         """
@@ -112,12 +102,22 @@ class Board:
         """
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
-    def _update_connected_components(self, i, j, color) -> None:
-        connected_components_set = self._connected_components_blue if color == Color.Blue else self._connected_components_red
-        print(str(color)+'Connected component: '+str(connected_components_set))
+    def _update_graph(self, i, j, color) -> None:
+        """
+        Updates either the red or blue graph with 
+        a new edge
+        """
+        match color:
+            case Color.Red:
+                graph = self.red_graph
+            case Color.Blue:
+                graph = self.blue_graph
+
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
-        connected_components_set.update_conn_comp(node=(i, j), nbrs=nbrs)
+        breakpoint()
+        for nbr in nbrs:
+            graph.add_edge((i, j), nbr)
 
     def place_stone(self, i: int, j: int, color: Color) -> 'Board':
         """
@@ -128,7 +128,8 @@ class Board:
             self[i, j] = Cell(x=i, y=j, color=color)
             # now let's update the connected components
             # TODO: implement updated conn component
-            self._update_connected_components(i, j, color)
+            breakpoint()
+            self._update_graph(i, j, color)
         else:
             raise ValueError(
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))

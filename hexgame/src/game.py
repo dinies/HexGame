@@ -45,10 +45,9 @@ class Game:
         while self.status == self.GameStatus.Running:
             print(self.board)
             # TODO:remove this debug logging
-            print('blue: ', self.board._connected_components_blue)
-            print('red: ', self.board._connected_components_red)
-            print(
-                self.board._connected_components_blue.no_comps)
+            print('blue: ', self.board.blue_graph)
+            print('red: ', self.board.red_graph)
+
             self._play()
         else:
             # TODO:move this to a logger/cli
