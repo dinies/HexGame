@@ -1,5 +1,5 @@
-use crate::game::cell::Cell;
-use crate::game::cell::Ownership;
+use super::cell::Cell;
+use super::cell::Ownership;
 
 /*
  A board is a set of exagonal cells stacked in a 2D matrix shape.
@@ -16,29 +16,46 @@ use crate::game::cell::Ownership;
      ----------
 */
 
-#[derive(Debug)]   
-pub struct Board{
-    pub cells: Vec<Vec<Cell>>
-    
+#[derive(Debug)]
+pub struct Board {
+    pub cells: Vec<Vec<Cell>>,
 }
 
-impl Board{
-    
+impl Board {
     pub fn new() -> Self {
-        Self{cells : vec![vec![]]}
+        Self {
+            cells: vec![vec![]],
+        }
     }
 
-    pub fn new_from_dim( dim: usize ) -> Self{
-        Self{cells : vec![vec![Cell::new();dim];dim]}
+    pub fn new_from_dim(dim: usize) -> Self {
+        Self {
+            cells: vec![vec![Cell::new(); dim]; dim],
+        }
     }
 
-    pub fn new_from_dims( dim_x: usize, dim_y: usize ) -> Self{
-        Self{cells : vec![vec![Cell::new();dim_y];dim_x]}
+    pub fn new_from_dims(dim_x: usize, dim_y: usize) -> Self {
+        Self {
+            cells: vec![vec![Cell::new(); dim_y]; dim_x],
+        }
     }
 
     pub fn to_string_now(&self) {
         println!("Hello, from Board!");
-        let c: Cell = Cell{ownership : Ownership::None};
+        let c: Cell = Cell {
+            ownership: Ownership::None,
+        };
         c.to_string_now();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::game::board::Board;
+    #[test]
+    fn check_board_contructor() {
+        let b: Board = Board::new();
+        assert_eq!(b.cells.len(), 1);
+        assert_eq!(b.cells[0].len(), 0);
     }
 }
