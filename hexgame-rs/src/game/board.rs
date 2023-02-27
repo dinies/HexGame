@@ -52,10 +52,18 @@ impl Board {
 #[cfg(test)]
 mod tests {
     use crate::game::board::Board;
+    use crate::game::cell::Ownership;
     #[test]
     fn check_board_contructor() {
-        let b: Board = Board::new();
-        assert_eq!(b.cells.len(), 1);
-        assert_eq!(b.cells[0].len(), 0);
+        let empty_board: Board = Board::new();
+        assert_eq!(empty_board.cells.len(), 1);
+        assert_eq!(empty_board.cells[0].len(), 0);
+        let small_board: Board = Board::new_from_dim(3);
+        assert_eq!(small_board.cells.len(), 3);
+        assert_eq!(small_board.cells[0].len(), 3);
+        assert_eq!(small_board.cells[0][0].ownership, Ownership::None);
+        let uneven_board: Board = Board::new_from_dims(3,2);
+        assert_eq!(uneven_board.cells.len(), 3);
+        assert_eq!(uneven_board.cells[0].len(), 2);
     }
 }
