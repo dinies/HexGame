@@ -1,5 +1,4 @@
 use super::cell::Cell;
-use super::cell::Ownership;
 
 /*
  A board is a set of exagonal cells stacked in a 2D matrix shape.
@@ -44,16 +43,8 @@ impl Board {
         return Board::new_from_dims(dim, dim);
     }
 
-    pub fn to_string_now(&self) {
-        println!("Hello, from Board!");
-        let c: Cell = Cell {
-            x: 0,
-            y: 0,
-            ownership: Ownership::None,
-        };
-        c.to_string_now();
-    }
-    fn is_valid_square(self, x: isize, y: isize) -> bool {
+
+    fn is_valid_square(&self, x: isize, y: isize) -> bool {
         let num_columns: usize = self.cells.len();
         let num_rows;
         match self.cells.get(0) {
@@ -66,7 +57,7 @@ impl Board {
             || y >= num_rows.try_into().unwrap());
     }
 
-    fn get_neighbours(self, x: isize, y: isize) -> Vec<Cell> {
+    fn get_neighbours(&self, x: isize, y: isize) -> Vec<Cell> {
         let mut neighbours: Vec<Cell> = Vec::with_capacity(8);
         let neighbours_coords: Vec<(isize, isize)> = vec![
             (x - 1, y),
@@ -79,12 +70,13 @@ impl Board {
             (x + 1, y + 1),
         ];
         for (coord_x, coord_y) in neighbours_coords {
-            let is_valid : bool =self.is_valid_square(coord_x, coord_y);
-            if is_valid {
-                neighbours.push(self.cells[0][0]);
+            if self.is_valid_square(coord_x, coord_y) {
+                neighbours.push(
+                    self.cells[usize::try_from(coord_x).unwrap()]
+                        [usize::try_from(coord_y).unwrap()],
+                );
             }
         }
-
         return neighbours;
     }
 }

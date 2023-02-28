@@ -23,9 +23,6 @@ impl Cell {
     pub fn new_from_ownership(x: usize, y: usize, ownership: Ownership) -> Self {
         Self { x, y, ownership }
     }
-    pub fn to_string_now(&self) {
-        println!("Hello, from Cell!");
-    }
 }
 
 impl PartialEq for Cell {
@@ -53,9 +50,12 @@ mod tests {
         assert_eq!(c.ownership, Ownership::Player1);
     }
 
+    #[test]
     fn test_equals(){
         let c_1: Cell = Cell::new_from_ownership(0, 1, Ownership::Player1);
-        let c_2: Cell = Cell::new(0,1);
+        let mut c_2: Cell = Cell::new(0,1);
+        assert_ne!(c_1, c_2);
+        c_2.ownership = Ownership::Player1;
         assert_eq!(c_1, c_2);
     }
 }
