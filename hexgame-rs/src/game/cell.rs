@@ -1,23 +1,36 @@
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Ownership {
     None,
     Player1,
     Player2,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Cell {
+    pub x: usize,
+    pub y: usize,
     pub ownership: Ownership,
 }
 
 impl Cell {
-    pub fn new() -> Self {
+    pub fn new(x: usize, y: usize) -> Self {
         Self {
+            x,
+            y,
             ownership: Ownership::None,
         }
     }
+    pub fn new_from_ownership(x: usize, y: usize, ownership: Ownership) -> Self {
+        Self { x, y, ownership }
+    }
     pub fn to_string_now(&self) {
         println!("Hello, from Cell!");
+    }
+}
+
+impl PartialEq for Cell {
+    fn eq(&self, other: &Cell) -> bool {
+        self.x == other.x && self.y == other.y && self.ownership == other.ownership
     }
 }
 
@@ -26,8 +39,23 @@ mod tests {
     use crate::game::cell::Cell;
     use crate::game::cell::Ownership;
     #[test]
-    fn cell_constructor() {
-        let c: Cell = Cell::new();
+    fn test_cell_constructor() {
+        let c: Cell = Cell::new(0, 1);
+        assert_eq!(c.x, 0);
+        assert_eq!(c.y, 1);
         assert_eq!(c.ownership, Ownership::None);
+    }
+    #[test]
+    fn test_cell_constructor_from_ownership() {
+        let c: Cell = Cell::new_from_ownership(0, 1, Ownership::Player1);
+        assert_eq!(c.x, 0);
+        assert_eq!(c.y, 1);
+        assert_eq!(c.ownership, Ownership::Player1);
+    }
+
+    fn test_equals(){
+        let c_1: Cell = Cell::new_from_ownership(0, 1, Ownership::Player1);
+        let c_2: Cell = Cell::new(0,1);
+        assert_eq!(c_1, c_2);
     }
 }
