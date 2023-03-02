@@ -94,7 +94,10 @@ impl Board {
         let dim_y;
         match visited_nodes.get(0) {
             Some(row) => dim_y = row.len(),
-            None => panic!("The board is empty"),
+            None => panic!("The board is empty: x dimension is zero"),
+        }
+        if dim_y == 0 {
+            panic!("The board is empty: y dimension is zero")
         }
         for x in 0..dim_x {
             for y in 0..dim_y {
@@ -166,6 +169,7 @@ impl Board {
 mod tests {
     use crate::game::board::Board;
     use crate::game::cell::{Cell, Ownership};
+    use rstest::*;
     #[test]
     fn test_board_contructor() {
         let empty_board: Board = Board::new();
@@ -198,24 +202,19 @@ mod tests {
     #[test]
     fn test_is_valid_square_on_small_board() {
         let small_board: Board = Board::new_from_dims(2, 3);
-        assert!(small_board.is_valid_square(0, 0));
-        assert!(small_board.is_valid_square(0, 1));
-        assert!(small_board.is_valid_square(1, 0));
-        assert!(small_board.is_valid_square(1, 1));
-        assert!(small_board.is_valid_square(0, 2));
-        assert!(small_board.is_valid_square(1, 2));
-        assert!(!small_board.is_valid_square(2, 0));
-        assert!(!small_board.is_valid_square(2, 1));
-        assert!(!small_board.is_valid_square(2, 2));
-        assert!(!small_board.is_valid_square(3, 3));
+        let valid_squares: [(isize, isize); 6] = [(0, 0), (0, 1), (1, 0), (1, 1), (0, 2), (1, 2)];
+        for (x, y) in valid_squares {
+            assert!(small_board.is_valid_square(x, y));
+        }
+        let invalid_squares: [(isize, isize); 4] = [(2, 0), (2, 1), (2, 2), (3, 3)];
+        for (x, y) in invalid_squares {
+            assert!(!small_board.is_valid_square(x, y));
+        }
     }
 
     #[test]
     fn test_get_neighbours() {
-        let cell_1: Cell = Cell::new(1, 0);
-        let cell_2: Cell = Cell::new(0, 1);
-        let cell_3: Cell = Cell::new(1, 1);
-        let truth: Vec<Cell> = vec![cell_1, cell_2, cell_3];
+        let truth: Vec<Cell> = vec![Cell::new(1, 0), Cell::new(0, 1), Cell::new(1, 1)];
         let board: Board = Board::new_from_dim(2);
         assert_eq!(board.get_neighbours(0, 0), truth);
     }
@@ -229,23 +228,55 @@ mod tests {
 
     #[test]
     fn test_find_next_node_to_visit() {
+        let mut visited_nodes: Vec<Vec<bool>> = vec![vec![true; 4]; 2];
+        visited_nodes[0][2] = false;
+        assert_eq!(Board::find_next_node_to_visit(&visited_nodes), Some((0, 2)));
+        let visited_nodes: Vec<Vec<bool>> = vec![vec![true, true, true, false]];
+        assert_eq!(Board::find_next_node_to_visit(&visited_nodes), Some((0, 3)));
+        let visited_nodes: Vec<Vec<bool>> = vec![vec![true, true]];
+        assert_eq!(Board::find_next_node_to_visit(&visited_nodes), None);
+    }
 
-        let mut visited_nodes: Vec<Vec<bool>> = vec![vec![false; 4]; 2];
-        visited_nodes[0][2] = true;
-        assert_eq!( Board::find_next_node_to_visit(&visited_nodes), Some( (0,2) ));
+    #[fixture]
+    fn testing_board() -> Board {
+        let mut board: Board = Board::new_from_dim(3);
+        board.cells[0][2].ownership = Ownership::Player1;
+        board.cells[1][0].ownership = Ownership::Player1;
+        board.cells[2][1].ownership = Ownership::Player2;
+        board.cells[2][2].ownership = Ownership::Player2;
+        board
+    }
 
+    #[fixture]
+    fn testing_visited_nodes() -> Vec<Vec<bool>> {
+        vec![vec![false; 3]; 3]
+    }
 
-        let visited_nodes: Vec<Vec<bool>> = 
-            vec![
-                vec![ true, true, true, false ],
-                vec![ false , true, true, false ],
-                vec![ true, true, true, false ]
-            ];
-        assert_eq!( Board::find_next_node_to_visit(&visited_nodes), Some( (3,0) ));
-        let visited_nodes: Vec<Vec<bool>> = 
-            vec![
-                vec![ false, false ]
-            ];
-        assert_eq!( Board::find_next_node_to_visit(&visited_nodes), None );
+    #[rstest]
+    fn test_expand_component_of_size_one(
+        testing_board: Board,
+        mut testing_visited_nodes: Vec<Vec<bool>>,
+    ) {
+        let starting_cell: Cell = Cell::new_from_ownership(0, 2, Ownership::Player1);
+        let component: Vec<Cell> =
+            testing_board.expand_component(&mut testing_visited_nodes, starting_cell);
+        assert_eq!(component.len(), 1);
+        assert_eq!(component[0], starting_cell);
+    }
+
+    #[rstest]
+    fn test_expand_component_of_size_two(
+        testing_board: Board,
+        mut testing_visited_nodes: Vec<Vec<bool>>,
+    ) {
+        let starting_cell: Cell = Cell::new_from_ownership(2, 1, Ownership::Player2);
+        let component: Vec<Cell> =
+            testing_board.expand_component(&mut testing_visited_nodes, starting_cell);
+        assert_eq!(component.len(), 2);
+        assert_eq!(component[0], starting_cell);
+        assert_eq!(
+            component[1],
+            Cell::new_from_ownership(2, 2, Ownership::Player2)
+        );
     }
 }
