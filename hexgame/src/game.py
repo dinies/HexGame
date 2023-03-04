@@ -39,10 +39,14 @@ class Game:
         return self.player_1 if self.current_player == self.player_2 else self.player_2
 
     def _has_player_won(self):
-        # TODO: change this to actual logic!!
-        if self.move > 60:
-            return True
-        return False
+        current_color = self.current_player.color
+        match current_color:
+            case Color.Red:
+                conn_comp = self.board.red_conn_comp
+            case Color.Blue:
+                conn_comp = self.board.blue_conn_comp
+
+        raise NotImplementedError()
 
     def start(self):
         while self.status == self.GameStatus.Running:

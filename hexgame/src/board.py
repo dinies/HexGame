@@ -96,14 +96,6 @@ class Board:
 
         return board_str
 
-    @property
-    def red_conn_comp(self) -> UnionFind[tuple[int, int]]:
-        return self._red_conn_comp
-
-    @property
-    def blue_conn_comp(self) -> UnionFind[tuple[int, int]]:
-        return self._blue_conn_comp
-
     def _make_board(self, dim_x: int, dim_y: int) -> list[list[Cell]]:
         """
         represents a dim_x * dim_y board of hexagonal cells
@@ -147,6 +139,14 @@ class Board:
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
         return self
 
+    def _has_color_won(self, color) -> bool:
+        """
+        Returns true iff the color has managed to
+        create a continuos path of stones of that color
+        from the two of it's borders
+        """
+        raise NotImplementedError()
+
     def has_cell(self, coords: tuple[int, int]) -> bool:
         """
         has_cell function checks if the square defined by
@@ -163,6 +163,38 @@ class Board:
         """
         x, y = coords
         return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
+
+    def get_borders(self, color: Color):
+        """
+        Returns a tuple containing list of those positions
+        (as int,int tuples) that belong to the two borders of
+        a given color
+        """
+        match color:
+            case Color.Red:
+                bottom_red = [(x, 0) for x in range(self.dim_x)]
+                top_red = [(x, self.dim_y-1) for x in range(self.dim_x)]
+                return (bottom_red, top_red)
+            case Color.Blue:
+                left_blue = [(0, y) for y in range(self.dim_y)]
+                right_blue = [(self.dim_x-1, y) for y in range(self.dim_y)]
+                return (left_blue, right_blue)
+
+    def is_red_border_cell(self, coords: tuple[int, int]) -> bool:
+        """   
+        Returns true if we are on one of the two red borders,
+        bottom and top.
+        """
+        x, y = coords
+        return y == 0 or y == (self.dim_y - 1)
+
+    def is_blue_border_cell(self, coords: tuple[int, int]) -> bool:
+        """   
+        Returns true if we are on one of the two blue borders,
+        bottom and top.
+        """
+        x, y = coords
+        return x == 0 or x == (self.dim_x - 1)
 
     def find_neighbours(self, coords: tuple[int, int]) -> set[Cell]:
         """
@@ -187,6 +219,14 @@ class Board:
         nbrd = {self[cell.x, cell.y] for cell in theoretical_nbrd if self.has_cell(
             (cell.x, cell.y))}
         return nbrd
+
+    @property
+    def red_conn_comp(self) -> UnionFind[tuple[int, int]]:
+        return self._red_conn_comp
+
+    @property
+    def blue_conn_comp(self) -> UnionFind[tuple[int, int]]:
+        return self._blue_conn_comp
 
     @property
     def empty_positions(self) -> Iterator[tuple[int, int]]:

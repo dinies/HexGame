@@ -148,3 +148,33 @@ class TestBoardProperties:
         print(str(board))
         assert len(board.blue_conn_comp) == 9
         assert len(board.red_conn_comp) == 8
+
+    @pytest.mark.parametrize(
+        "color_str, expected",
+        [
+            pytest.param("red",
+                         (
+                             [(0, 0), (1, 0), (2, 0)],
+                             [(0, 2), (1, 2), (2, 2)]
+                         )),
+            pytest.param("blue", (
+                [(0, 0), (0, 1), (0, 2)],
+                [(2, 0), (2, 1), (2, 2)]
+            ))
+        ]
+    )
+    def test_get_borders(self, color_str: str, expected: tuple[list[tuple[int, int]], list[tuple[int, int]]]):
+        dim_x = 3
+        dim_y = 3
+        nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
+        uf_red = UnionFind(nodes)
+        uf_blue = UnionFind(nodes)
+        board = Board(dim_x=dim_x, dim_y=dim_y,
+                      red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+        match color_str:
+            case "red":
+                color = Color.Red
+            case "blue":
+                color = Color.Blue
+        res = board.get_borders(color)
+        assert (res == expected)
