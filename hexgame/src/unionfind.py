@@ -6,7 +6,7 @@ __author__ = "Gianpiero Cea"
 
 class UnionFind(Generic[T]):
     """
-    A union find is a data strcutre to store a partition
+    A union find is a data structure to store a partition
     of a set into disjoint sets.
 
     This is what normally arises as the induced equivalence
@@ -41,6 +41,9 @@ class UnionFind(Generic[T]):
 
     def __str__(self) -> str:
         return str(self._parents)
+
+    def __iter__(self):
+        return self._parents.__iter__()
 
     def find(self, a: T) -> T:
         """
