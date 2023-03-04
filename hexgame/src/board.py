@@ -2,7 +2,7 @@
 from collections.abc import Iterator
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
-from hexgame.src.graph import Graph
+from hexgame.src.unionfind import UnionFind
 
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)
@@ -27,13 +27,21 @@ __author__ = "Gianpiero Cea"
 
 class Board:
 
-    def __init__(self, dim_x: int = BOARD_DEFAULT_X_DIM, dim_y: int = BOARD_DEFAULT_Y_DIM) -> 'Board':
+    def __init__(
+        self,
+        red_conn_comp: UnionFind[tuple[int, int]],
+        blue_conn_comp: UnionFind[tuple[int, int]],
+        dim_x: int = BOARD_DEFAULT_X_DIM,
+        dim_y: int = BOARD_DEFAULT_Y_DIM
+    ) -> None:
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
         self._board: list[list[Cell]] = self._make_board(dim_x, dim_y)
 
-        self._red_graph: Graph[tuple[int, int]] = Graph[tuple[int, int]]()
-        self._blue_graph: Graph[tuple[int, int]] = Graph[tuple[int, int]]()
+        self._red_conn_comp: UnionFind[tuple[int,
+                                             int]] = red_conn_comp
+        self._blue_conn_comp: UnionFind[tuple[int,
+                                              int]] = blue_conn_comp
 
     def __getitem__(self, coord: tuple) -> Cell:
         x, y = coord
@@ -89,12 +97,12 @@ class Board:
         return board_str
 
     @property
-    def red_graph(self) -> Graph[tuple[int, int]]:
-        return self._red_graph
+    def red_conn_comp(self) -> UnionFind[tuple[int, int]]:
+        return self._red_conn_comp
 
     @property
-    def blue_graph(self) -> Graph[tuple[int, int]]:
-        return self._blue_graph
+    def blue_conn_comp(self) -> UnionFind[tuple[int, int]]:
+        return self._blue_conn_comp
 
     def _make_board(self, dim_x: int, dim_y: int) -> list[list[Cell]]:
         """
@@ -102,22 +110,26 @@ class Board:
         """
         return [[Cell(x, y) for y in range(dim_y)] for x in range(dim_x)]
 
-    def _update_graph(self, i, j, color) -> None:
+    def _update_conn_comp(self, i, j, color) -> None:
         """
-        Updates either the red or blue graph with 
-        a new edge
+        Updates either the red or blue connected component  
+        when adding a new stone at place i,j
         """
         match color:
             case Color.Red:
-                graph = self.red_graph
+                conn_comp = self.red_conn_comp
+                print("selected red conn comp")
+                print(f"id:{id(conn_comp)}")
             case Color.Blue:
-                graph = self.blue_graph
+                conn_comp = self.blue_conn_comp
+                print("selected blue conn comp")
+                print(f"id:{id(conn_comp)}")
 
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
-        breakpoint()
+
         for nbr in nbrs:
-            graph.add_edge((i, j), nbr)
+            conn_comp.union((i, j), nbr)
 
     def place_stone(self, i: int, j: int, color: Color) -> 'Board':
         """
@@ -128,8 +140,8 @@ class Board:
             self[i, j] = Cell(x=i, y=j, color=color)
             # now let's update the connected components
             # TODO: implement updated conn component
-            breakpoint()
-            self._update_graph(i, j, color)
+            self._update_conn_comp(i, j, color)
+            print(f"{color} player has placed stone on tile {(i,j)}")
         else:
             raise ValueError(
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
@@ -172,7 +184,7 @@ class Board:
             Cell(x, y-1))
         )
 
-        nbrd = {cell for cell in theoretical_nbrd if self.has_cell(
+        nbrd = {self[cell.x, cell.y] for cell in theoretical_nbrd if self.has_cell(
             (cell.x, cell.y))}
         return nbrd
 
@@ -188,22 +200,28 @@ class Board:
 
 if __name__ == "__main__":
     # TODO when happy these all work move to the test file
-    board = Board()
+    dim_x = 11
+    dim_y = 11
+    nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
+    uf_red = UnionFind(nodes)
+    uf_blue = UnionFind(nodes)
+    board = Board(dim_x=dim_x, dim_y=dim_y,
+                  red_conn_comp=uf_red, blue_conn_comp=uf_blue)
 
     print("STARTING BOARD: ")
-    print(board._board)
+    print(str(board))
     cell_2_3 = Cell(2, 3, Color.Red)
     board.__setitem__((2, 3), cell_2_3)
     print("CHANGED BOARD: ")
 
-    print(board._board)
+    print(str(board))
     print(len(list(board.empty_positions)))
 
     # now try placing stone
 
     board.place_stone(3, 3, Color.Blue)
     print("CHANGED BOARD AFTER PLACING: ")
-    print(board._board)
+    print(str(board))
 
     print(len(list(board.empty_positions)))
 
@@ -213,6 +231,13 @@ if __name__ == "__main__":
 
     assert board.is_border_cell((10, 1))
 
-    print(repr(board))
-
     print(str(board))
+
+    print(f"The len of blue conn comp:{len(board.blue_conn_comp)}")
+    print(f"The len of red conn comp:{len(board.red_conn_comp)}")
+
+    board.place_stone(4, 3, Color.Blue)
+    print("CHANGED BOARD AFTER PLACING: ")
+    print(str(board))
+    print(f"The len of blue conn comp:{len(board.blue_conn_comp)}")
+    print(f"The len of red conn comp:{len(board.red_conn_comp)}")
