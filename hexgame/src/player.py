@@ -25,10 +25,14 @@ class Player:
     def play(self, board: Board) -> Board:
         # TODO: Implements other logic:AI/Human etc
         # !!!RANDOM POLICY
-        next_move: tuple[int, int] = random.choice(list(board.empty_positions))
-        i, j = next_move
-        new_board = self._place_stone(board, i, j)
-        return new_board
+
+        if (list(board.empty_positions) != []):
+            next_move: tuple[int, int] = random.choice(
+                list(board.empty_positions))
+            i, j = next_move
+            new_board = self._place_stone(board, i, j)
+            return new_board
+        return board
 
 
 if __name__ == "__main__":
