@@ -31,14 +31,14 @@ class Game:
 
         if self._has_player_won():
             self.status = self.GameStatus.Finished
-
-        self.move += 1
-        self.current_player = self._next_player()
+        else:
+            self.move += 1
+            self.current_player = self._next_player()
 
     def _next_player(self) -> Player:
         return self.player_1 if self.current_player == self.player_2 else self.player_2
 
-    def _has_player_won(self):
+    def _has_player_won(self) -> bool:
         current_color = self.current_player.color
         return self.board._has_color_won(current_color)
 
