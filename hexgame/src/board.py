@@ -139,13 +139,18 @@ class Board:
                 "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
         return self
 
-    def _has_color_won(self, color) -> bool:
+    def _has_color_won(self, color: Color) -> bool:
         """
-        Returns true iff the color has managed to
-        create a continuos path of stones of that color
+        Returns true iff there exist a continous path of stones of that color
         from the two of it's borders
         """
-        raise NotImplementedError()
+        border_1, border_2 = self.get_borders(color)
+        conn_comp = self.get_conn_comp(color)
+        for node_1 in border_1:
+            for node_2 in border_2:
+                if conn_comp.find((node_1.x, node_1.y)) == conn_comp.find((node_2.x, node_2.y)):
+                    return True
+        return False
 
     def has_cell(self, coords: tuple[int, int]) -> bool:
         """
@@ -164,7 +169,7 @@ class Board:
         x, y = coords
         return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
 
-    def get_borders(self, color: Color):
+    def get_borders(self, color: Color) -> tuple[list[Cell], list[Cell]]:
         """
         Returns a tuple containing list of those positions
         (as int,int tuples) that belong to the two borders of
@@ -172,13 +177,30 @@ class Board:
         """
         match color:
             case Color.Red:
-                bottom_red = [(x, 0) for x in range(self.dim_x)]
-                top_red = [(x, self.dim_y-1) for x in range(self.dim_x)]
+                bottom_red = [self[x, 0] for x in range(
+                    self.dim_x) if self[x, 0].color == color]
+                top_red = [self[x, self.dim_y-1]
+                           for x in range(self.dim_x) if self[x, self.dim_y-1].color == color]
                 return (bottom_red, top_red)
             case Color.Blue:
-                left_blue = [(0, y) for y in range(self.dim_y)]
-                right_blue = [(self.dim_x-1, y) for y in range(self.dim_y)]
+                left_blue = [self[0, y] for y in range(
+                    self.dim_y) if self[0, y].color == color]
+                right_blue = [self[self.dim_x-1, y]
+                              for y in range(self.dim_y) if self[self.dim_x-1, y].color == color]
                 return (left_blue, right_blue)
+        raise ValueError(f"Not recognised color {color}")
+
+    def get_conn_comp(self, color: Color) -> UnionFind[tuple[int, int]]:
+        """
+        Given a color gives the connected component for that
+        color
+        """
+        match color:
+            case Color.Red:
+                return self.red_conn_comp
+            case Color.Blue:
+                return self.blue_conn_comp
+        raise ValueError(f"Not recognised color {color}")
 
     def is_red_border_cell(self, coords: tuple[int, int]) -> bool:
         """   

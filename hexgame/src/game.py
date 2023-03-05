@@ -24,7 +24,7 @@ class Game:
         self.move: int = 0
         self.current_player: Player = self.player_1
 
-    def _play(self):
+    def _play(self) -> None:
         # player  move
         new_board = self.current_player.play(self.board)
         self.board = new_board
@@ -35,20 +35,14 @@ class Game:
         self.move += 1
         self.current_player = self._next_player()
 
-    def _next_player(self):
+    def _next_player(self) -> Player:
         return self.player_1 if self.current_player == self.player_2 else self.player_2
 
     def _has_player_won(self):
         current_color = self.current_player.color
-        match current_color:
-            case Color.Red:
-                conn_comp = self.board.red_conn_comp
-            case Color.Blue:
-                conn_comp = self.board.blue_conn_comp
+        return self.board._has_color_won(current_color)
 
-        raise NotImplementedError()
-
-    def start(self):
+    def start(self) -> None:
         while self.status == self.GameStatus.Running:
             print(self.board)
             # TODO:remove this debug logging

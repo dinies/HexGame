@@ -154,16 +154,16 @@ class TestBoardProperties:
         [
             pytest.param("red",
                          (
-                             [(0, 0), (1, 0), (2, 0)],
-                             [(0, 2), (1, 2), (2, 2)]
+                             [],
+                             []
                          )),
             pytest.param("blue", (
-                [(0, 0), (0, 1), (0, 2)],
-                [(2, 0), (2, 1), (2, 2)]
+                [],
+                []
             ))
         ]
     )
-    def test_get_borders(self, color_str: str, expected: tuple[list[tuple[int, int]], list[tuple[int, int]]]):
+    def test_get_borders_empty(self, color_str: str, expected: tuple[list[tuple[int, int]], list[tuple[int, int]]]):
         dim_x = 3
         dim_y = 3
         nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
@@ -178,3 +178,23 @@ class TestBoardProperties:
                 color = Color.Blue
         res = board.get_borders(color)
         assert (res == expected)
+
+    def test_has_color_won(self):
+        dim_x = 3
+        dim_y = 3
+        nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
+        uf_red = UnionFind(nodes)
+        uf_blue = UnionFind(nodes)
+        board = Board(dim_x=dim_x, dim_y=dim_y,
+                      red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+        assert (not board._has_color_won(Color.Blue))
+        assert (not board._has_color_won(Color.Red))
+        board.place_stone(0, 0, Color.Red)
+        assert (not board._has_color_won(Color.Blue))
+        assert (not board._has_color_won(Color.Red))
+        board.place_stone(0, 1, Color.Red)
+        assert (not board._has_color_won(Color.Blue))
+        assert (not board._has_color_won(Color.Red))
+        board.place_stone(0, 2, Color.Red)
+        assert (not board._has_color_won(Color.Blue))
+        assert (board._has_color_won(Color.Red))
