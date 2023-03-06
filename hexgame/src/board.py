@@ -1,5 +1,4 @@
 """board.py: A board to play a game of hex on"""
-from collections.abc import Iterator
 from hexgame.src.cell import Cell
 from hexgame.src.color import Color
 from hexgame.src.unionfind import UnionFind
@@ -251,13 +250,13 @@ class Board:
         return self._blue_conn_comp
 
     @property
-    def empty_positions(self) -> Iterator[tuple[int, int]]:
+    def empty_positions(self) -> list[tuple[int, int]]:
         """
         Returns all the positions (i,j) for which the
         (i,j) cell is empty
         """
         # TODO:reimplement this with self.__iter__
-        return ((x, y) for y, row in enumerate(self._board) for x, _ in enumerate(row) if self[x, y].is_empty)
+        return [(x, y) for y, row in enumerate(self._board) for x, _ in enumerate(row) if self[x, y].is_empty]
 
 
 if __name__ == "__main__":
@@ -277,7 +276,7 @@ if __name__ == "__main__":
     print("CHANGED BOARD: ")
 
     print(str(board))
-    print(len(list(board.empty_positions)))
+    print(len(board.empty_positions))
 
     # now try placing stone
 
@@ -285,7 +284,7 @@ if __name__ == "__main__":
     print("CHANGED BOARD AFTER PLACING: ")
     print(str(board))
 
-    print(len(list(board.empty_positions)))
+    print(len(board.empty_positions))
 
     assert board.has_cell((4, 1))
 
