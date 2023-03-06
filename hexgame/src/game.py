@@ -65,7 +65,7 @@ if __name__ == "__main__":
     board = Board(dim_x=dim_x, dim_y=dim_y,
                   red_conn_comp=uf_red, blue_conn_comp=uf_blue)
     player_1 = Player()
-    player_2 = Player(color=Color.Blue)
+    player_2 = Player(color=Color.Blue, mode=Player.PlayerMode.Keyboard)
     game = Game(board=board,
                 player_1=player_1,
                 player_2=player_2
