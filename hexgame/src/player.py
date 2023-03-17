@@ -1,5 +1,6 @@
 import random
 import enum
+import re
 from hexgame.src.color import Color
 from hexgame.src.board import Board
 
@@ -65,14 +66,22 @@ class Player:
                 print(f"Please insert the coords where to place stone \
                     for player {self.color}")
                 print("Pass x coord:")
-                i = int(input())
-                print("Pass y coord:")
-                j = int(input())
-                valid_coords = board.has_cell((i, j)) and (
-                    i, j) in board.empty_positions
-            print(f"{self.color} player has chosen to place stone at place {(i,j)}")
-            new_board = self._place_stone(board, i, j)
-            return new_board
+                inp = input()
+                if re.match("^[0-9]*$", inp) and len(inp) > 0:
+                    i = int(inp)
+                    print("Pass y coord:")
+                    inp = input()
+                    if re.match("^[0-9]*$", inp) and len(inp) > 0:
+                        j = int(inp)
+                        try:
+                            valid_coords = board.has_cell((i, j)) and (
+                                i, j) in board.empty_positions
+                            print(
+                                f"{self.color} player has chosen to place stone at place {(i,j)}")
+                            new_board = self._place_stone(board, i, j)
+                            return new_board
+                        except ValueError as e:
+                            print(e)
         else:
             return board
 

@@ -127,15 +127,16 @@ class Board:
         place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary
         """
-        if self[i, j].is_empty:
-            self[i, j] = Cell(x=i, y=j, color=color)
-            # now let's update the connected components
-            # TODO: implement updated conn component
-            self._update_conn_comp(i, j, color)
-            print(f"{color} player has placed stone on tile {(i,j)}")
+        if self.has_cell((i, j)):
+            if self[i, j].is_empty:
+                self[i, j] = Cell(x=i, y=j, color=color)
+                # now let's update the connected components
+                # TODO: implement updated conn component
+                self._update_conn_comp(i, j, color)
+                print(f"{color} player has placed stone on tile {(i,j)}")
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}- already occupied".format_map({"cell": self[(i, j)]}))
+                "Cannot place stone at cell {cell}- already occupied or out of range".format_map({"cell": (i, j)}))
         return self
 
     def _has_color_won(self, color: Color) -> bool:
