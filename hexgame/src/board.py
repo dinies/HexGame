@@ -134,9 +134,12 @@ class Board:
                 # TODO: implement updated conn component
                 self._update_conn_comp(i, j, color)
                 print(f"{color} player has placed stone on tile {(i,j)}")
+            else:
+                raise ValueError(
+                    "Cannot place stone at cell {cell}- already occupied".format_map({"cell": (i, j)}))
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}- already occupied or out of range".format_map({"cell": (i, j)}))
+                "Cannot place stone at cell {cell}- out of range".format_map({"cell": (i, j)}))
         return self
 
     def _has_color_won(self, color: Color) -> bool:
