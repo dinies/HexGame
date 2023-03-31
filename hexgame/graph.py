@@ -1,6 +1,6 @@
 """graph.py Represents a graph """
 from typing import TypeVar, Generic, Optional
-from hexgame.src.unionfind import UnionFind
+from hexgame.unionfind import UnionFind
 T = TypeVar('T')
 __author__ = "Gianpiero Cea"
 

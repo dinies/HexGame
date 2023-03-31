@@ -1,7 +1,7 @@
-from hexgame.src.board import Board
-from hexgame.src.cell import Cell
-from hexgame.src.color import Color
-from hexgame.src.unionfind import UnionFind
+from hexgame.board import Board
+from hexgame.cell import Cell
+from hexgame.color import Color
+from hexgame.unionfind import UnionFind
 import pytest
 
 
