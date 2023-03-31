@@ -1,7 +1,7 @@
 """board.py: A board to play a game of hex on"""
-from hexgame.src.cell import Cell
-from hexgame.src.color import Color
-from hexgame.src.unionfind import UnionFind
+from hexgame.cell import Cell
+from hexgame.color import Color
+from hexgame.unionfind import UnionFind
 
 
 BOARD_DEFAULT_X_DIM = BOARD_DEFAULT_Y_DIM = int(11)

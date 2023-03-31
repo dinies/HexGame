@@ -1,5 +1,5 @@
 """ cell.py: A single hexagonal cell that makes up a hex board """
-from hexgame.src.color import Color
+from hexgame.color import Color
 
 __author__ = "Gianpiero Cea"
 

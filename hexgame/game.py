@@ -1,10 +1,9 @@
 """ game.py  a game of hex"""
 
-from hexgame.src.color import Color
-from hexgame.src.board import Board
-from hexgame.src.player import Player
-from hexgame.src.unionfind import UnionFind
-from logging import Logger
+from hexgame.color import Color
+from hexgame.board import Board
+from hexgame.player import Player
+from hexgame.unionfind import UnionFind
 import enum
 __author__ = "Gianpiero Cea"
 

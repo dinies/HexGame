@@ -1,8 +1,8 @@
 import random
 import enum
 import re
-from hexgame.src.color import Color
-from hexgame.src.board import Board
+from hexgame.color import Color
+from hexgame.board import Board
 
 __author__ = "Gianpiero Cea"
 
