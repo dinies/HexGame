@@ -45,15 +45,17 @@ class TestBoardProperties:
         assert small_board.has_cell(test_input)
 
     # __str__
-    @pytest.mark.parametrize("board_sizes,expected",
-                             [pytest.param(
-                                 (0, 0), ''
-                             ),
-                                 pytest.param(
-                                 (3, 4), '- - - \n - - - \n  - - - \n   - - - \n'
-                             )]
-                             )
-    def test__str__empty_board(self, board_sizes: tuple[int, int], expected: str):
+    @pytest.mark.parametrize(
+            "board_sizes,expected",
+            [pytest.param(
+                (0, 0), ''
+            ),
+                pytest.param(
+                (3, 4), '- - - \n - - - \n  - - - \n   - - - \n'
+            )]
+            )
+    def test__str__empty_board(
+            self, board_sizes: tuple[int, int], expected: str):
         fake_uf = UnionFind([(1, 1)])
         board = Board(dim_x=board_sizes[0], dim_y=board_sizes[1],
                       red_conn_comp=fake_uf, blue_conn_comp=fake_uf)
@@ -85,7 +87,8 @@ class TestBoardProperties:
         ]
 
     )
-    def test_neighbours_of_cell(self, board_size: str, tile: tuple[int, int], expected: set[tuple[int, int]]):
+    def test_neighbours_of_cell(self, board_size: str, tile: tuple[int, int],
+                                expected: set[tuple[int, int]]):
         if board_size == "small":
             dim_x = 2
             dim_y = 3
@@ -163,7 +166,9 @@ class TestBoardProperties:
             ))
         ]
     )
-    def test_get_borders_empty(self, color_str: str, expected: tuple[list[tuple[int, int]], list[tuple[int, int]]]):
+    def test_get_borders_empty(
+            self, color_str: str,
+            expected: tuple[list[tuple[int, int]], list[tuple[int, int]]]):
         dim_x = 3
         dim_y = 3
         nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]

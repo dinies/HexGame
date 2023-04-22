@@ -103,7 +103,7 @@ class Board:
 
     def _update_conn_comp(self, i, j, color) -> None:
         """
-        Updates either the red or blue connected component  
+        Updates either the red or blue connected component
         when adding a new stone at place i,j
         """
         match color:
@@ -130,16 +130,15 @@ class Board:
         if self.has_cell((i, j)):
             if self[i, j].is_empty:
                 self[i, j] = Cell(x=i, y=j, color=color)
-                # now let's update the connected components
-                # TODO: implement updated conn component
                 self._update_conn_comp(i, j, color)
-                print(f"{color} player has placed stone on tile {(i,j)}")
             else:
                 raise ValueError(
-                    "Cannot place stone at cell {cell}- already occupied".format_map({"cell": (i, j)}))
+                    "Cannot place stone at cell {cell}-"
+                    "already occupied".format_map({"cell": (i, j)}))
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}- out of range".format_map({"cell": (i, j)}))
+                "Cannot place stone at cell {cell}-"
+                "out of range".format_map({"cell": (i, j)}))
         return self
 
     def _has_color_won(self, color: Color) -> bool:
@@ -151,7 +150,8 @@ class Board:
         conn_comp = self.get_conn_comp(color)
         for node_1 in border_1:
             for node_2 in border_2:
-                if conn_comp.find((node_1.x, node_1.y)) == conn_comp.find((node_2.x, node_2.y)):
+                if conn_comp.find((node_1.x, node_1.y)) == conn_comp.find(
+                        (node_2.x, node_2.y)):
                     return True
         return False
 
@@ -166,11 +166,12 @@ class Board:
 
     def is_border_cell(self, coords: tuple[int, int]) -> bool:
         """
-        is_border_cell checks if the @param cell is found on one of the 4 borders
-        of the board
+        is_border_cell checks if the @param cell is found on one of the four
+        borders of the board
         """
         x, y = coords
-        return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
+        return x == 0 or x == (self.dim_x - 1) or \
+            y == 0 or y == (self.dim_y - 1)
 
     def get_borders(self, color: Color) -> tuple[list[Cell], list[Cell]]:
         """
@@ -182,14 +183,14 @@ class Board:
             case Color.Red:
                 bottom_red = [self[x, 0] for x in range(
                     self.dim_x) if self[x, 0].color == color]
-                top_red = [self[x, self.dim_y-1]
-                           for x in range(self.dim_x) if self[x, self.dim_y-1].color == color]
+                top_red = [self[x, self.dim_y-1] for x in range(self.dim_x)
+                           if self[x, self.dim_y-1].color == color]
                 return (bottom_red, top_red)
             case Color.Blue:
                 left_blue = [self[0, y] for y in range(
                     self.dim_y) if self[0, y].color == color]
-                right_blue = [self[self.dim_x-1, y]
-                              for y in range(self.dim_y) if self[self.dim_x-1, y].color == color]
+                right_blue = [self[self.dim_x-1, y] for y in range(self.dim_y)
+                              if self[self.dim_x-1, y].color == color]
                 return (left_blue, right_blue)
         raise ValueError(f"Not recognised color {color}")
 
@@ -241,8 +242,8 @@ class Board:
             Cell(x, y-1))
         )
 
-        nbrd = {self[cell.x, cell.y] for cell in theoretical_nbrd if self.has_cell(
-            (cell.x, cell.y))}
+        nbrd = {self[cell.x, cell.y] for cell in theoretical_nbrd if
+                self.has_cell((cell.x, cell.y))}
         return nbrd
 
     @property
@@ -260,7 +261,8 @@ class Board:
         (i,j) cell is empty
         """
         # TODO:reimplement this with self.__iter__
-        return [(x, y) for y, row in enumerate(self._board) for x, _ in enumerate(row) if self[x, y].is_empty]
+        return [(x, y) for y, row in enumerate(self._board)
+                for x, _ in enumerate(row) if self[x, y].is_empty]
 
 
 if __name__ == "__main__":

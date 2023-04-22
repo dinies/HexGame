@@ -34,7 +34,10 @@ class Game:
             self.current_player = self._next_player()
 
     def _next_player(self) -> Player:
-        return self.player_1 if self.current_player == self.player_2 else self.player_2
+        if self.current_player == self.player_2:
+            return self.player_1
+        else:
+            return self.player_2
 
     def _has_player_won(self) -> bool:
         current_color = self.current_player.color
@@ -43,10 +46,6 @@ class Game:
     def start(self) -> None:
         while self.status == self.GameStatus.Running:
             print(self.board)
-            # TODO:remove this debug logging
-            print(f'blue conn comp len: {len( self.board.blue_conn_comp)}')
-            print(f'red conn comp len: { len(self.board.red_conn_comp)}')
-
             self._play()
         else:
             # TODO:move this to a logger/cli

@@ -57,7 +57,7 @@ class Player:
 
     def _get_keyboard_move(self, board: Board) -> Board:
         """
-        Waits for the keyboard input to get 
+        Waits for the keyboard input to get
         a move
         """
         if (board.empty_positions) != []:
@@ -76,8 +76,6 @@ class Player:
                         try:
                             valid_coords = board.has_cell((i, j)) and (
                                 i, j) in board.empty_positions
-                            print(
-                                f"{self.color} player has chosen to place stone at place {(i,j)}")
                             new_board = self._place_stone(board, i, j)
                             return new_board
                         except ValueError as e:
