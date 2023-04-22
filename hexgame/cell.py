@@ -14,7 +14,8 @@ class Cell:
         self.y: int = y
 
     def __repr__(self) -> str:
-        return "({x},{y})- Color:{color}".format_map({"x": self.x, "y": self.y, "color": self.color})
+        return "({x},{y})- Color:{color}".format_map({"x": self.x, "y": self.y,
+                                                      "color": self.color})
 
     def __str__(self) -> str:
         # TODO: str is for pretty display-can make repr more dev like?
