@@ -109,12 +109,8 @@ class Board:
         match color:
             case Color.Red:
                 conn_comp = self.red_conn_comp
-                print("selected red conn comp")
-                print(f"id:{id(conn_comp)}")
             case Color.Blue:
                 conn_comp = self.blue_conn_comp
-                print("selected blue conn comp")
-                print(f"id:{id(conn_comp)}")
 
         all_nbrs = self.find_neighbours((i, j))
         nbrs = set((nbr.x, nbr.y) for nbr in all_nbrs if nbr.color == color)
