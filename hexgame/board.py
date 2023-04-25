@@ -31,7 +31,9 @@ class Board:
         red_conn_comp: UnionFind[tuple[int, int]],
         blue_conn_comp: UnionFind[tuple[int, int]],
         dim_x: int = BOARD_DEFAULT_X_DIM,
-        dim_y: int = BOARD_DEFAULT_Y_DIM
+        dim_y: int = BOARD_DEFAULT_Y_DIM,
+        swap_rule_allowed: bool = True
+
     ) -> None:
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
@@ -41,6 +43,8 @@ class Board:
                                              int]] = red_conn_comp
         self._blue_conn_comp: UnionFind[tuple[int,
                                               int]] = blue_conn_comp
+        self._swap_rule_allowed: swap_rule_allowed
+        self._number_of_moves_made: int = 0
 
     def __getitem__(self, coord: tuple) -> Cell:
         x, y = coord
@@ -68,7 +72,7 @@ class Board:
         for example, for a 5X5 board:
 
         - - - - -
-         - b - - - 
+         - b - - -
           - - - R -
            - - - b -
             - - R - -
@@ -124,9 +128,11 @@ class Board:
         and recomputes the connected components dictionary
         """
         if self.has_cell((i, j)):
-            if self[i, j].is_empty:
+            if self[i, j].is_empty or (self._swap_rule_allowed and
+                                       self._number_of_moves_made == 1):
                 self[i, j] = Cell(x=i, y=j, color=color)
                 self._update_conn_comp(i, j, color)
+                self._number_of_moves_made += 1
             else:
                 raise ValueError(
                     "Cannot place stone at cell {cell}-"
@@ -249,6 +255,14 @@ class Board:
     @property
     def blue_conn_comp(self) -> UnionFind[tuple[int, int]]:
         return self._blue_conn_comp
+
+    @property
+    def possible_moves(self) -> list[tuple[int, int]]:
+        if self._number_of_moves_made == 1 and self._swap_rule_allowed:
+            return [(x, y) for y, row in enumerate(self._board)
+                    for x, _ in enumerate(row)]
+        else:
+            return empty_positions
 
     @property
     def empty_positions(self) -> list[tuple[int, int]]:

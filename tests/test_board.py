@@ -46,14 +46,14 @@ class TestBoardProperties:
 
     # __str__
     @pytest.mark.parametrize(
-            "board_sizes,expected",
-            [pytest.param(
-                (0, 0), ''
-            ),
-                pytest.param(
-                (3, 4), '- - - \n - - - \n  - - - \n   - - - \n'
-            )]
-            )
+        "board_sizes,expected",
+        [pytest.param(
+            (0, 0), ''
+        ),
+            pytest.param(
+            (3, 4), '- - - \n - - - \n  - - - \n   - - - \n'
+        )]
+    )
     def test__str__empty_board(
             self, board_sizes: tuple[int, int], expected: str):
         fake_uf = UnionFind([(1, 1)])
@@ -119,6 +119,19 @@ class TestBoardProperties:
 
         assert board[1, 2] == Cell(1, 2, Color.Red)
 
+    def test_use_swap_rule(self):
+        dim_x = 3
+        dim_y = 3
+        nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
+        uf_red = UnionFind(nodes)
+        uf_blue = UnionFind(nodes)
+        board = Board(dim_x=dim_x, dim_y=dim_y,
+                      red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+        board.place_stone(1, 2, color=Color.Red)
+
+        board.place_stone(1, 2, color=Color.Blue)
+        assert board[1, 2].color == Color.Blue
+
     def test_place_stone_already_filled(self):
         with pytest.raises(ValueError):
             dim_x = 3
@@ -128,6 +141,8 @@ class TestBoardProperties:
             uf_blue = UnionFind(nodes)
             board = Board(dim_x=dim_x, dim_y=dim_y,
                           red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+            board.place_stone(0, 0, color=Color.Blue)
+
             board.place_stone(1, 2, color=Color.Red)
 
             board.place_stone(1, 2, color=Color.Blue)
