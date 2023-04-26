@@ -43,7 +43,7 @@ class Board:
                                              int]] = red_conn_comp
         self._blue_conn_comp: UnionFind[tuple[int,
                                               int]] = blue_conn_comp
-        self._swap_rule_allowed: swap_rule_allowed
+        self._swap_rule_allowed: bool = swap_rule_allowed
         self._number_of_moves_made: int = 0
 
     def __getitem__(self, coord: tuple) -> Cell:
@@ -262,7 +262,7 @@ class Board:
             return [(x, y) for y, row in enumerate(self._board)
                     for x, _ in enumerate(row)]
         else:
-            return empty_positions
+            return self.empty_positions
 
     @property
     def empty_positions(self) -> list[tuple[int, int]]:

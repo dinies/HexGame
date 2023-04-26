@@ -105,6 +105,17 @@ class TestBoardProperties:
         nbrs = board.find_neighbours(tile)
         assert nbrs == expected
 
+    def test_swap_rule_allowed(self):
+        dim_x = 2
+        dim_y = 2
+        nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
+        uf_red = UnionFind(nodes)
+        uf_blue = UnionFind(nodes)
+        board = Board(dim_x=dim_x, dim_y=dim_y,
+                      red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+
+        assert board._swap_rule_allowed
+
     # place_stone
 
     def test_place_stone_on_empty_board(self):
