@@ -20,7 +20,7 @@ impl Agent {
 
 impl RandomPlay for Agent {
     fn choose_next_move(&self, board: &Board) -> (usize, usize) {
-        let possible_moves: Vec<(usize, usize)> = board.get_unoccupied_squares();
+        let possible_moves: Vec<(usize, usize)> = board.get_possible_moves();
         if possible_moves.len() == 0 {
             panic!("there are no more possible moves to made on the board, the game should have already ended");
         }
