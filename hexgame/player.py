@@ -47,9 +47,10 @@ class Player:
         """
         Implements a random policy
         """
-        if (board.empty_positions) != []:
+        available_actions = board.possible_moves
+        if (available_actions) != []:
             next_move: tuple[int, int] = random.choice(
-                board.empty_positions)
+                available_actions)
             i, j = next_move
             new_board = self._place_stone(board, i, j)
             return new_board
@@ -60,7 +61,8 @@ class Player:
         Waits for the keyboard input to get
         a move
         """
-        if (board.empty_positions) != []:
+        available_actions = board.possible_moves
+        if (available_actions) != []:
             valid_coords = False
             while (not valid_coords):
                 print(f"Please insert the coords where to place stone \
@@ -75,7 +77,7 @@ class Player:
                         j = int(inp)
                         try:
                             valid_coords = board.has_cell((i, j)) and (
-                                i, j) in board.empty_positions
+                                i, j) in available_actions
                             new_board = self._place_stone(board, i, j)
                             return new_board
                         except ValueError as e:
