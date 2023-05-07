@@ -21,6 +21,8 @@ pub struct Board {
     pub dim_x: usize,
     pub dim_y: usize,
     pub cells: Vec<Vec<Cell>>,
+    turn_number: usize,
+    swap_rule_flag: bool,
 }
 
 impl Board {
@@ -29,6 +31,8 @@ impl Board {
             dim_x: 0,
             dim_y: 0,
             cells: vec![vec![]],
+            turn_number: 0,
+            swap_rule_flag: true,
         }
     }
 
@@ -45,6 +49,8 @@ impl Board {
             dim_x,
             dim_y,
             cells: matrix,
+            turn_number: 0,
+            swap_rule_flag: true,
         }
     }
 
@@ -64,6 +70,19 @@ impl Board {
             || y < 0
             || x >= self.dim_x.try_into().unwrap()
             || y >= self.dim_y.try_into().unwrap());
+    }
+    pub fn get_possible_moves(&self) -> Vec<(usize, usize)> {
+        let mut possible_moves = vec![];
+        for x in 0..self.dim_x {
+            for y in 0..self.dim_y {
+                if self.cells[x][y].ownership == Ownership::None
+                    || (self.turn_number == 1 && self.swap_rule_flag)
+                {
+                    possible_moves.push((x, y));
+                }
+            }
+        }
+        possible_moves
     }
 
     pub fn get_unoccupied_squares(&self) -> Vec<(usize, usize)> {
@@ -208,6 +227,7 @@ impl Board {
 
     pub fn make_move(&mut self, coords: (usize, usize), owner: Ownership) {
         self.cells[coords.0][coords.1].ownership = owner;
+        self.turn_number += 1;
     }
 
     pub fn to_string(&self) -> String {
@@ -436,12 +456,40 @@ mod tests {
     }
 
     /*
-     ----------
-     ' 1  0  2 '
-      ' 0  0  2 '
-       ' 0  1  0 '
-         ----------
+     -------
+      ' 0  0 '
+       ' 0  1 '
+         -------
     */
+    #[fixture]
+    fn testing_board_almost_empty() -> Board {
+        let mut board: Board = Board::new_from_dim(2);
+        board.cells[1][0].ownership = Ownership::Player1;
+        board
+    }
+
+    #[rstest]
+    fn test_get_possible_moves_non_swap_case(mut testing_board_almost_empty: Board) {
+        testing_board_almost_empty.turn_number = 2;
+        let result: Vec<(usize, usize)> = testing_board_almost_empty.get_possible_moves();
+        let truth: [(usize, usize); 3] = [(0, 0), (0, 1), (1, 1)];
+        assert_eq!(result.len(), 3);
+        for coord in truth {
+            assert_eq!(result.contains(&coord), true);
+        }
+    }
+
+    #[rstest]
+    fn test_get_possible_moves_swap_case(mut testing_board_almost_empty: Board) {
+        testing_board_almost_empty.turn_number = 1;
+        let result: Vec<(usize, usize)> = testing_board_almost_empty.get_possible_moves();
+        let truth: [(usize, usize); 4] = [(0, 0), (0, 1), (1, 0), (1, 1)];
+        assert_eq!(result.len(), 4);
+        for coord in truth {
+            assert_eq!(result.contains(&coord), true);
+        }
+    }
+
     #[rstest]
     fn test_get_unoccupied_squares(testing_board: Board) {
         let result: Vec<(usize, usize)> = testing_board.get_unoccupied_squares();
