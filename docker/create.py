@@ -22,8 +22,7 @@ def getDisplay() -> str:
     elif sys.platform == "win32":
         raise EnvironmentError("Windows not supported yet")
     else:
-        raise EnvironmentError(
-            "Unknown platform (not linux, macos or windows)")
+        raise EnvironmentError("Unknown platform (not linux, macos or windows)")
 
 
 def main():
@@ -42,12 +41,15 @@ def main():
     uid = str(os.getuid()) if sys.platform == "linux" else "1000"
     gid = str(os.getgid()) if sys.platform == "linux" else "1000"
 
-    build_args = {k: str(v) for k, v in {
-        "uid": uid,
-        "gid": gid,
-        "base_image": base_image,
-        "user": username
-    }.items()}
+    build_args = {
+        k: str(v)
+        for k, v in {
+            "uid": uid,
+            "gid": gid,
+            "base_image": base_image,
+            "user": username,
+        }.items()
+    }
 
     docker.build(
         build_args=build_args,
@@ -55,30 +57,23 @@ def main():
         file="./Dockerfile",
         ssh="default",
         tags=docker_image_name,
-        target=target_dockerfile_layer
+        target=target_dockerfile_layer,
     )
 
-    environment = {
-        "DISPLAY": getDisplay(),
-        "QT_X11_NO_MITSHM": "1"
-    }
+    environment = {"DISPLAY": getDisplay(), "QT_X11_NO_MITSHM": "1"}
     if gpus:
         environment["NVIDIA_DRIVER_CAPABILITIES"] = "all"
 
-    devices = [
-        "/dev/input:/dev/input:rwm"
-    ]
+    devices = ["/dev/input:/dev/input:rwm"]
 
     if sys.platform == "linux":
         devices.append("/dev/dri:/dev/dri:rwm")
 
     volumes = [
         ("/var/run/docker.sock", "/var/run/docker.sock"),
-        (Path(home / "hex_exchange").as_posix(),
-         "/home/"+username+"/hex_exchange"),
+        (Path(home / "hex_exchange").as_posix(), "/home/" + username + "/hex_exchange"),
         ("/tmp/.X11-unix", "/tmp/.X11-unix", "rw"),
-        (os.environ.get("XAUTHORITY"),
-         "/home/"+username+"/.Xauthority")
+        (os.environ.get("XAUTHORITY"), "/home/" + username + "/.Xauthority"),
     ]
 
     docker_run_params = {
@@ -90,8 +85,8 @@ def main():
         "networks": "host",
         "interactive": True,
         "tty": True,
-        "user": uid + ':' + gid,
-        "volumes": volumes
+        "user": uid + ":" + gid,
+        "volumes": volumes,
     }
 
     if gpus:

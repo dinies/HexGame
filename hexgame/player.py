@@ -8,15 +8,13 @@ __author__ = "Gianpiero Cea"
 
 
 class Player:
-    """ player.py A player of a hex game, either red or blue"""
+    """player.py A player of a hex game, either red or blue"""
 
     class PlayerMode(enum.Enum):
         AI = 0
         Keyboard = 1
 
-    def __init__(self,
-                 color: Color = Color.Red,
-                 mode: PlayerMode = PlayerMode.AI):
+    def __init__(self, color: Color = Color.Red, mode: PlayerMode = PlayerMode.AI):
         self.color: Color = color
         self.mode = mode
 
@@ -49,8 +47,7 @@ class Player:
         """
         available_actions = board.possible_moves
         if (available_actions) != []:
-            next_move: tuple[int, int] = random.choice(
-                available_actions)
+            next_move: tuple[int, int] = random.choice(available_actions)
             i, j = next_move
             new_board = self._place_stone(board, i, j)
             return new_board
@@ -64,9 +61,11 @@ class Player:
         available_actions = board.possible_moves
         if (available_actions) != []:
             valid_coords = False
-            while (not valid_coords):
-                print(f"Please insert the coords where to place stone \
-                    for player {self.color}")
+            while not valid_coords:
+                print(
+                    f"Please insert the coords where to place stone \
+                    for player {self.color}"
+                )
                 print("Pass x coord:")
                 inp = input()
                 if re.match("^[0-9]*$", inp) and len(inp) > 0:
@@ -76,8 +75,9 @@ class Player:
                     if re.match("^[0-9]*$", inp) and len(inp) > 0:
                         j = int(inp)
                         try:
-                            valid_coords = board.has_cell((i, j)) and (
-                                i, j) in available_actions
+                            valid_coords = (
+                                board.has_cell((i, j)) and (i, j) in available_actions
+                            )
                             new_board = self._place_stone(board, i, j)
                             return new_board
                         except ValueError as e:

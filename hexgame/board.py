@@ -25,24 +25,20 @@ __author__ = "Gianpiero Cea"
 
 
 class Board:
-
     def __init__(
         self,
         red_conn_comp: UnionFind[tuple[int, int]],
         blue_conn_comp: UnionFind[tuple[int, int]],
         dim_x: int = BOARD_DEFAULT_X_DIM,
         dim_y: int = BOARD_DEFAULT_Y_DIM,
-        swap_rule_allowed: bool = True
-
+        swap_rule_allowed: bool = True,
     ) -> None:
         self.dim_x: int = dim_x
         self.dim_y: int = dim_y
         self._board: list[list[Cell]] = self._make_board(dim_x, dim_y)
 
-        self._red_conn_comp: UnionFind[tuple[int,
-                                             int]] = red_conn_comp
-        self._blue_conn_comp: UnionFind[tuple[int,
-                                              int]] = blue_conn_comp
+        self._red_conn_comp: UnionFind[tuple[int, int]] = red_conn_comp
+        self._blue_conn_comp: UnionFind[tuple[int, int]] = blue_conn_comp
         self._swap_rule_allowed: bool = swap_rule_allowed
         self._number_of_moves_made: int = 0
 
@@ -60,7 +56,7 @@ class Board:
     def __repr__(self) -> str:
         # TODO: change the Cell repr to be simpler
         # then change this one to make it even simpler
-        return (str(self._board))
+        return str(self._board)
 
     def __str__(self) -> str:
         """
@@ -81,16 +77,16 @@ class Board:
         board_str = ""
 
         for y in reversed(range(self.dim_y)):
-            new_line = " "*(self.dim_y-y-1)
+            new_line = " " * (self.dim_y - y - 1)
             for x in range(self.dim_x):
                 cell = self[x, y]
                 match cell:
                     case Cell(x, y, Color.Empty):
-                        cell_str = '-'
+                        cell_str = "-"
                     case Cell(x, y, Color.Red):
-                        cell_str = 'R'
+                        cell_str = "R"
                     case Cell(x, y, Color.Blue):
-                        cell_str = 'b'
+                        cell_str = "b"
 
                 new_line += cell_str + " "
             new_line += "\n"
@@ -122,25 +118,28 @@ class Board:
         for nbr in nbrs:
             conn_comp.union((i, j), nbr)
 
-    def place_stone(self, i: int, j: int, color: Color) -> 'Board':
+    def place_stone(self, i: int, j: int, color: Color) -> "Board":
         """
         place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary
         """
         if self.has_cell((i, j)):
-            if self[i, j].is_empty or (self._swap_rule_allowed and
-                                       self._number_of_moves_made == 1):
+            if self[i, j].is_empty or (
+                self._swap_rule_allowed and self._number_of_moves_made == 1
+            ):
                 self[i, j] = Cell(x=i, y=j, color=color)
                 self._update_conn_comp(i, j, color)
                 self._number_of_moves_made += 1
             else:
                 raise ValueError(
                     "Cannot place stone at cell {cell}-"
-                    "already occupied".format_map({"cell": (i, j)}))
+                    "already occupied".format_map({"cell": (i, j)})
+                )
         else:
             raise ValueError(
                 "Cannot place stone at cell {cell}-"
-                "out of range".format_map({"cell": (i, j)}))
+                "out of range".format_map({"cell": (i, j)})
+            )
         return self
 
     def _has_color_won(self, color: Color) -> bool:
@@ -153,7 +152,8 @@ class Board:
         for node_1 in border_1:
             for node_2 in border_2:
                 if conn_comp.find((node_1.x, node_1.y)) == conn_comp.find(
-                        (node_2.x, node_2.y)):
+                    (node_2.x, node_2.y)
+                ):
                     return True
         return False
 
@@ -172,8 +172,7 @@ class Board:
         borders of the board
         """
         x, y = coords
-        return x == 0 or x == (self.dim_x - 1) or \
-            y == 0 or y == (self.dim_y - 1)
+        return x == 0 or x == (self.dim_x - 1) or y == 0 or y == (self.dim_y - 1)
 
     def get_borders(self, color: Color) -> tuple[list[Cell], list[Cell]]:
         """
@@ -183,16 +182,24 @@ class Board:
         """
         match color:
             case Color.Red:
-                bottom_red = [self[x, 0] for x in range(
-                    self.dim_x) if self[x, 0].color == color]
-                top_red = [self[x, self.dim_y-1] for x in range(self.dim_x)
-                           if self[x, self.dim_y-1].color == color]
+                bottom_red = [
+                    self[x, 0] for x in range(self.dim_x) if self[x, 0].color == color
+                ]
+                top_red = [
+                    self[x, self.dim_y - 1]
+                    for x in range(self.dim_x)
+                    if self[x, self.dim_y - 1].color == color
+                ]
                 return (bottom_red, top_red)
             case Color.Blue:
-                left_blue = [self[0, y] for y in range(
-                    self.dim_y) if self[0, y].color == color]
-                right_blue = [self[self.dim_x-1, y] for y in range(self.dim_y)
-                              if self[self.dim_x-1, y].color == color]
+                left_blue = [
+                    self[0, y] for y in range(self.dim_y) if self[0, y].color == color
+                ]
+                right_blue = [
+                    self[self.dim_x - 1, y]
+                    for y in range(self.dim_y)
+                    if self[self.dim_x - 1, y].color == color
+                ]
                 return (left_blue, right_blue)
         raise ValueError(f"Not recognised color {color}")
 
@@ -209,7 +216,7 @@ class Board:
         raise ValueError(f"Not recognised color {color}")
 
     def is_red_border_cell(self, coords: tuple[int, int]) -> bool:
-        """   
+        """
         Returns true if we are on one of the two red borders,
         bottom and top.
         """
@@ -217,7 +224,7 @@ class Board:
         return y == 0 or y == (self.dim_y - 1)
 
     def is_blue_border_cell(self, coords: tuple[int, int]) -> bool:
-        """   
+        """
         Returns true if we are on one of the two blue borders,
         bottom and top.
         """
@@ -235,17 +242,22 @@ class Board:
 
         # this is a theoretical neighborood in the
         # sense that some of this cell might be out of the board
-        theoretical_nbrd = set((
-            Cell(x+1, y),
-            Cell(x-1, y),
-            Cell(x, y+1),
-            Cell(x+1, y+1),
-            Cell(x-1, y-1),
-            Cell(x, y-1))
+        theoretical_nbrd = set(
+            (
+                Cell(x + 1, y),
+                Cell(x - 1, y),
+                Cell(x, y + 1),
+                Cell(x + 1, y + 1),
+                Cell(x - 1, y - 1),
+                Cell(x, y - 1),
+            )
         )
 
-        nbrd = {self[cell.x, cell.y] for cell in theoretical_nbrd if
-                self.has_cell((cell.x, cell.y))}
+        nbrd = {
+            self[cell.x, cell.y]
+            for cell in theoretical_nbrd
+            if self.has_cell((cell.x, cell.y))
+        }
         return nbrd
 
     @property
@@ -259,8 +271,9 @@ class Board:
     @property
     def possible_moves(self) -> list[tuple[int, int]]:
         if self._number_of_moves_made == 1 and self._swap_rule_allowed:
-            return [(x, y) for y, row in enumerate(self._board)
-                    for x, _ in enumerate(row)]
+            return [
+                (x, y) for y, row in enumerate(self._board) for x, _ in enumerate(row)
+            ]
         else:
             return self.empty_positions
 
@@ -271,8 +284,12 @@ class Board:
         (i,j) cell is empty
         """
         # TODO:reimplement this with self.__iter__
-        return [(x, y) for y, row in enumerate(self._board)
-                for x, _ in enumerate(row) if self[x, y].is_empty]
+        return [
+            (x, y)
+            for y, row in enumerate(self._board)
+            for x, _ in enumerate(row)
+            if self[x, y].is_empty
+        ]
 
 
 if __name__ == "__main__":
@@ -282,8 +299,9 @@ if __name__ == "__main__":
     nodes = [(x, y) for y in range(dim_y) for x in range(dim_x)]
     uf_red = UnionFind(nodes)
     uf_blue = UnionFind(nodes)
-    board = Board(dim_x=dim_x, dim_y=dim_y,
-                  red_conn_comp=uf_red, blue_conn_comp=uf_blue)
+    board = Board(
+        dim_x=dim_x, dim_y=dim_y, red_conn_comp=uf_red, blue_conn_comp=uf_blue
+    )
 
     print("STARTING BOARD: ")
     print(str(board))

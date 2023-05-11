@@ -14,8 +14,9 @@ class Cell:
         self.y: int = y
 
     def __repr__(self) -> str:
-        return "({x},{y})- Color:{color}".format_map({"x": self.x, "y": self.y,
-                                                      "color": self.color})
+        return "({x},{y})- Color:{color}".format_map(
+            {"x": self.x, "y": self.y, "color": self.color}
+        )
 
     def __str__(self) -> str:
         # TODO: str is for pretty display-can make repr more dev like?
@@ -24,7 +25,7 @@ class Cell:
     def __hash__(self) -> int:
         return hash(str(self))
 
-    def __eq__(self, __o: 'Cell') -> bool:
+    def __eq__(self, __o: "Cell") -> bool:
         return self.x == __o.x and self.y == __o.y and self.color == __o.color
 
     @property
