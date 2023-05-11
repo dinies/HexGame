@@ -1,22 +1,20 @@
 # HexGame
-Implementation of the Hex Game
+Implementation of the Hex Game in Python.
 
 # Installation
-
 ## Installation from pip
-
-'''bash
-pip install -i https://test.pypi.org/simple/ hexgame==0.0.3
-'''
+```bash
+pip install -i https://test.pypi.org/simple/ hexgame==0.0.4
+```
 
 # Running
 ## Running game
-'''bash
+```bash
 cd HexGame
 python -m hexgame
-'''
+```
 ## Running unit tests
-'''bash
+```bash
 cd HexGame
 python -m pytest
-'''
+```
