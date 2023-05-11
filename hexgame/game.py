@@ -4,6 +4,7 @@ from hexgame.color import Color
 from hexgame.board import Board
 from hexgame.player import Player
 import enum
+
 __author__ = "Gianpiero Cea"
 
 
@@ -12,9 +13,12 @@ class Game:
         Finished = 0
         Running = 1
 
-    def __init__(self,
-                 board: Board, player_1: Player = Player(),
-                 player_2: Player = Player(Color.Blue)):
+    def __init__(
+        self,
+        board: Board,
+        player_1: Player = Player(),
+        player_2: Player = Player(Color.Blue),
+    ):
         self.player_1: Player = player_1
         self.player_2: Player = player_2
         self.board: Board = board
@@ -49,4 +53,4 @@ class Game:
             self._play()
         else:
             # TODO:move this to a logger/cli
-            print(str(self.current_player.color)+' wins')
+            print(str(self.current_player.color) + " wins")

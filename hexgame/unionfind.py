@@ -1,6 +1,7 @@
 """unionfind.py implements a union find data structure"""
 from typing import TypeVar, Generic
-T = TypeVar('T')
+
+T = TypeVar("T")
 __author__ = "Gianpiero Cea"
 
 
@@ -79,10 +80,10 @@ class UnionFind(Generic[T]):
         # for performance we make sure the deepest tree components
         # is always above
 
-        if (root_a == root_b):
+        if root_a == root_b:
             return
 
-        if (self._size[root_a] < self._size[root_b]):
+        if self._size[root_a] < self._size[root_b]:
             self._parents[root_a] = root_b
             self._size[root_b] += self._size[root_a]
         else:

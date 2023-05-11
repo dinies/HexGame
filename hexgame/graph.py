@@ -1,14 +1,15 @@
 """graph.py Represents a graph """
 from typing import TypeVar, Generic, Optional
 from hexgame.unionfind import UnionFind
-T = TypeVar('T')
+
+T = TypeVar("T")
 __author__ = "Gianpiero Cea"
 
 
 class Graph(Generic[T]):
     def __init__(
-            self, adjency: dict[T, list[T]] = {},
-            conn_comps: Optional[UnionFind[T]] = None) -> None:
+        self, adjency: dict[T, list[T]] = {}, conn_comps: Optional[UnionFind[T]] = None
+    ) -> None:
         self._adjency = adjency
         self._conn_comps = conn_comps if conn_comps else self.get_conn_comps()
 
@@ -57,7 +58,7 @@ class Graph(Generic[T]):
     def update_graph(self, node: T, nbrs: list[T]) -> None:
         if node in self._adjency:
             # TODO: this is horrible!!rewrite
-            self._adjency[node] = list({el for el in self._adjency[node]+nbrs})
+            self._adjency[node] = list({el for el in self._adjency[node] + nbrs})
             self._conn_comps = self.get_conn_comps()
         else:
             pass
@@ -65,8 +66,9 @@ class Graph(Generic[T]):
 
 
 if __name__ == "__main__":
-    gph = Graph({'a': ['b', 'c'], 'b': ['a', 'd'],
-                'c': ['a'], 'd': ['b'], 'e': [], 'f': []})
+    gph = Graph(
+        {"a": ["b", "c"], "b": ["a", "d"], "c": ["a"], "d": ["b"], "e": [], "f": []}
+    )
     print(gph)
 
     print(gph.get_conn_comps())
