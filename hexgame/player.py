@@ -24,24 +24,24 @@ class Player:
 
         return self.color == other.color
 
-    def _place_stone(self, board: Board, i, j) -> Board:
-        new_board = board.place_stone(i, j, self.color)
-        return new_board
+    def _place_stone(self, board: Board, i, j):
+        board.place_stone(i, j, self.color)
 
     # here we define the playing logic
-    def play(self, board: Board) -> Board:
+    def play(self, board: Board):
         """
         The main method that defines the playing behaviour
         based on player mode
         """
         match self.mode:
             case self.PlayerMode.AI:
-                return self._random_policy(board)
+                self._random_policy(board)
             case self.PlayerMode.Keyboard:
-                return self._get_keyboard_move(board)
-        raise ValueError(f"Unknown mode {self.mode}")
+                self._get_keyboard_move(board)
+            case _:
+                raise ValueError(f"Unknown mode {self.mode}")
 
-    def _random_policy(self, board: Board) -> Board:
+    def _random_policy(self, board: Board):
         """
         Implements a random policy
         """
@@ -49,11 +49,9 @@ class Player:
         if (available_actions) != []:
             next_move: tuple[int, int] = random.choice(available_actions)
             i, j = next_move
-            new_board = self._place_stone(board, i, j)
-            return new_board
-        return board
+            self._place_stone(board, i, j)
 
-    def _get_keyboard_move(self, board: Board) -> Board:
+    def _get_keyboard_move(self, board: Board):
         """
         Waits for the keyboard input to get
         a move
@@ -78,12 +76,9 @@ class Player:
                             valid_coords = (
                                 board.has_cell((i, j)) and (i, j) in available_actions
                             )
-                            new_board = self._place_stone(board, i, j)
-                            return new_board
+                            self._place_stone(board, i, j)
                         except ValueError as e:
                             print(e)
-        else:
-            return board
 
 
 if __name__ == "__main__":

@@ -28,8 +28,7 @@ class Game:
 
     def _play(self) -> None:
         # player  move
-        new_board = self.current_player.play(self.board)
-        self.board = new_board
+        self.current_player.play(self.board)
 
         if self._has_player_won():
             self.status = self.GameStatus.Finished

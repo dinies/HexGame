@@ -118,7 +118,7 @@ class Board:
         for nbr in nbrs:
             conn_comp.union((i, j), nbr)
 
-    def place_stone(self, i: int, j: int, color: Color) -> "Board":
+    def place_stone(self, i: int, j: int, color: Color):
         """
         place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary
@@ -140,7 +140,6 @@ class Board:
                 "Cannot place stone at cell {cell}-"
                 "out of range".format_map({"cell": (i, j)})
             )
-        return self
 
     def _has_color_won(self, color: Color) -> bool:
         """
