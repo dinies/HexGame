@@ -27,8 +27,30 @@ class Game:
         self.current_player: Player = self.player_1
 
     def _play(self) -> None:
-        # player  move
-        self.current_player.play(self.board)
+        moved = False
+        trials_cap = 10
+        trials_num = 0
+        while not moved:
+            trials_num += 1
+            try:
+                # player  move
+                chosen_move: tuple[int, int, Color] = self.current_player.play(
+                    self.board
+                )
+                self.board._play(chosen_move)
+                moved = True
+            except ValueError as e:
+                print(
+                    f"Error in trying to perfom the choosen move:\n"
+                    f"x:{chosen_move[0]} y:{chosen_move[1]}"
+                    f" color:{chosen_move[2]}\n{e}\n"
+                )
+
+                if trials_num + 1 < trials_cap:
+                    print("Try to make a different move\n")
+                else:
+                    print("Maximum number of trials reached\n")
+                    raise ValueError(e)
 
         if self._has_player_won():
             self.status = self.GameStatus.Finished

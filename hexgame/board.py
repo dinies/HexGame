@@ -118,7 +118,11 @@ class Board:
         for nbr in nbrs:
             conn_comp.union((i, j), nbr)
 
-    def place_stone(self, i: int, j: int, color: Color):
+    def _play(self, chosen_move) -> None:
+        i, j, color = chosen_move
+        self.place_stone(i, j, color)
+
+    def place_stone(self, i: int, j: int, color: Color) -> None:
         """
         place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary
@@ -132,12 +136,12 @@ class Board:
                 self._number_of_moves_made += 1
             else:
                 raise ValueError(
-                    "Cannot place stone at cell {cell}-"
+                    "Cannot place stone at cell {cell}: "
                     "already occupied".format_map({"cell": (i, j)})
                 )
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}-"
+                "Cannot place stone at cell {cell}: "
                 "out of range".format_map({"cell": (i, j)})
             )
 
