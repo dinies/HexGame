@@ -118,7 +118,7 @@ class Board:
         for nbr in nbrs:
             conn_comp.union((i, j), nbr)
 
-    def place_stone(self, i: int, j: int, color: Color):
+    def place_stone(self, i: int, j: int, color: Color) -> None:
         """
         place a stone at cell i,j on the board if this is empty
         and recomputes the connected components dictionary

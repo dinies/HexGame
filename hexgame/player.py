@@ -24,11 +24,11 @@ class Player:
 
         return self.color == other.color
 
-    def _place_stone(self, board: Board, i, j):
+    def _place_stone(self, board: Board, i, j) -> None:
         board.place_stone(i, j, self.color)
 
     # here we define the playing logic
-    def play(self, board: Board):
+    def play(self, board: Board) -> None:
         """
         The main method that defines the playing behaviour
         based on player mode
@@ -41,7 +41,7 @@ class Player:
             case _:
                 raise ValueError(f"Unknown mode {self.mode}")
 
-    def _random_policy(self, board: Board):
+    def _random_policy(self, board: Board) -> None:
         """
         Implements a random policy
         """
@@ -51,7 +51,7 @@ class Player:
             i, j = next_move
             self._place_stone(board, i, j)
 
-    def _get_keyboard_move(self, board: Board):
+    def _get_keyboard_move(self, board: Board) -> None:
         """
         Waits for the keyboard input to get
         a move
