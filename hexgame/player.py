@@ -21,37 +21,31 @@ class Player:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Player):
             return False
-
         return self.color == other.color
 
-    def _place_stone(self, board: Board, i, j) -> None:
-        board.place_stone(i, j, self.color)
-
     # here we define the playing logic
-    def play(self, board: Board) -> None:
+    def play(self, board: Board) -> tuple[int, int, Color]:
         """
         The main method that defines the playing behaviour
         based on player mode
         """
         match self.mode:
             case self.PlayerMode.AI:
-                self._random_policy(board)
+                return self._random_policy_move(board)
             case self.PlayerMode.Keyboard:
-                self._get_keyboard_move(board)
-            case _:
-                raise ValueError(f"Unknown mode {self.mode}")
+                return self._get_keyboard_move(board)
+        raise ValueError(f"Unknown mode {self.mode}")
 
-    def _random_policy(self, board: Board) -> None:
+    def _random_policy_move(self, board: Board) -> tuple[int, int, Color]:
         """
         Implements a random policy
         """
         available_actions = board.possible_moves
         if (available_actions) != []:
             next_move: tuple[int, int] = random.choice(available_actions)
-            i, j = next_move
-            self._place_stone(board, i, j)
+            return (next_move[0], next_move[1], self.color)
 
-    def _get_keyboard_move(self, board: Board) -> None:
+    def _get_keyboard_move(self, board: Board) -> tuple[int, int, Color]:
         """
         Waits for the keyboard input to get
         a move
@@ -76,7 +70,7 @@ class Player:
                             valid_coords = (
                                 board.has_cell((i, j)) and (i, j) in available_actions
                             )
-                            self._place_stone(board, i, j)
+                            return (i, j, self.color)
                         except ValueError as e:
                             print(e)
 

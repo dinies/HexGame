@@ -28,7 +28,8 @@ class Game:
 
     def _play(self) -> None:
         # player  move
-        self.current_player.play(self.board)
+        chosen_move: tuple[int, int, Color] = self.current_player.play(self.board)
+        self.board._play(chosen_move)
 
         if self._has_player_won():
             self.status = self.GameStatus.Finished
