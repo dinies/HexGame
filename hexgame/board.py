@@ -136,12 +136,12 @@ class Board:
                 self._number_of_moves_made += 1
             else:
                 raise ValueError(
-                    "Cannot place stone at cell {cell}-"
+                    "Cannot place stone at cell {cell}: "
                     "already occupied".format_map({"cell": (i, j)})
                 )
         else:
             raise ValueError(
-                "Cannot place stone at cell {cell}-"
+                "Cannot place stone at cell {cell}: "
                 "out of range".format_map({"cell": (i, j)})
             )
 

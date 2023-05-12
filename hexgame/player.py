@@ -66,13 +66,10 @@ class Player:
                     inp = input()
                     if re.match("^[0-9]*$", inp) and len(inp) > 0:
                         j = int(inp)
-                        try:
-                            valid_coords = (
-                                board.has_cell((i, j)) and (i, j) in available_actions
-                            )
-                            return (i, j, self.color)
-                        except ValueError as e:
-                            print(e)
+                        valid_coords = (
+                            board.has_cell((i, j)) and (i, j) in available_actions
+                        )
+                        return (i, j, self.color)
 
 
 if __name__ == "__main__":
