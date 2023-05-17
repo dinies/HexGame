@@ -118,10 +118,6 @@ class Board:
         for nbr in nbrs:
             conn_comp.union((i, j), nbr)
 
-    def _play(self, chosen_move) -> None:
-        i, j, color = chosen_move
-        self.place_stone(i, j, color)
-
     def place_stone(self, i: int, j: int, color: Color) -> None:
         """
         place a stone at cell i,j on the board if this is empty
